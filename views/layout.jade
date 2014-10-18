@@ -1,0 +1,20 @@
+html
+  head
+    block title
+      title Kikkeri
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    script(src='web/util.js')
+    block scripts
+      script(src='web/index.js')
+    link(rel='stylesheet', href='web/style.css')
+    block styles
+  body
+    nav
+      ul
+        li
+          a(href='/') Lisää tulos
+        li
+          a(href='charts.html') Tilastoja
+ 
+    #content
+      block content

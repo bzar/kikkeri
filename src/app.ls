@@ -26,6 +26,9 @@ app.get '/', (req, res) ->
   Game.find (err, games) ->
     res.render 'index', {games: games}
 
+app.get '/charts.html', (req, res) ->
+  res.render 'charts'
+
 app.get '/game/', (req, res) ->
   Game.find (err, games) ->
     res.send games

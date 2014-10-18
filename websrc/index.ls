@@ -19,22 +19,5 @@ init = ->
       if response.success
         window.location.reload(false)
 
-postJson = (url, data, onload, onerror) ->
-  request = new XMLHttpRequest();
-  request.open('POST', url, true);
-  request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-  request.onload = ->
-    onload(JSON.parse(request.responseText))
-  request.onerror = onerror
-  request.send(JSON.stringify(data));
-
-getJson = (url, onload, onerror) ->
-  request = new XMLHttpRequest();
-  request.open('GET', url, true);
-  request.onload = ->
-    onload(JSON.parse(request.responseText))
-  request.onerror = onerror
-  request.send();
-
 document.onreadystatechange = -> if document.readyState == "complete" then do init
 

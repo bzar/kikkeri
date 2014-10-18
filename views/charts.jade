@@ -1,0 +1,18 @@
+extends layout.jade
+
+block title
+  title Kikkeritilastoja
+
+block scripts
+  script(src='http://d3js.org/d3.v3.min.js')
+  script(src='web/prelude-browser-min.js')
+  script(src='web/chart_playergames.js')
+  script(src='web/charts.js')
+
+block styles
+  link(rel='stylesheet', href='web/charts.css')
+  
+block content
+  h2 Pelattuja pelejä
+  #chartPlayerGames
+    
