@@ -1,9 +1,7 @@
 var gulp = require('gulp');
 var gulpLiveScript = require('gulp-livescript');
 
-gulp.task('default', function() {
-  // place code for your default task here
-});
+gulp.task('default', ['build']);
 
 gulp.task('build', ['ls-server', 'ls-client', 'views', 'web']);
 
