@@ -1,0 +1,29 @@
+html
+  head
+    title Kikkeri
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    script(src='web/index.js')
+    link(rel='stylesheet', href='web/style.css')
+  body
+    h1 Lisää kikkeritulos
+    form(action='game/simple/', method='post')
+      ul
+        li
+          input#player1(type='text', placeholder='Nimi 1')
+          input#score1(type='number', placeholder='Pisteet 1')
+        li
+          input#player2(type='text', placeholder='Nimi 2')
+          input#score2(type='number', placeholder='Pisteet 2')
+        li
+          input(type='submit', value='Lähetä')
+    ul#games
+      each game in games
+        li
+          span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
+          span= game.teams[0].players[0]
+          span  vs 
+          span= game.teams[1].players[0]
+          span  | 
+          span= game.teams[0].score
+          span  - 
+          span= game.teams[1].score

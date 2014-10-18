@@ -1,0 +1,35 @@
+body {
+  background-color: #eee;
+}
+
+form {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+#games {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+#games li {
+  list-style: none;
+  padding: 4px;
+  margin: 0;
+}
+
+form ul {
+  padding: 0;
+  margin: 0;
+}
+form li {
+  list-style: none;
+  padding-bottom: 4px;
+  margin: 0;
+}
+
+input {
+  margin-right: 1em;
+}
