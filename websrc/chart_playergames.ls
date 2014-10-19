@@ -1,4 +1,4 @@
-chartPlayerGames = ->
+chartPlayerGames = (data) ->
   {sort, sort-by, reverse, concat-map, count-by, id} = require "prelude-ls"
 
   render = (data) ->
@@ -57,15 +57,14 @@ chartPlayerGames = ->
       .attr "y", (d) -> y(d.name)  + 4
       .text (.games)
 
-  getJson "game/", (data) ->
-    playerGames = data
-      |> concat-map (.teams)
-      |> concat-map (.players)
-      |> sort
-      |> count-by id
+  playerGames = data
+    |> concat-map (.teams)
+    |> concat-map (.players)
+    |> sort
+    |> count-by id
 
-    freqData = [{name: name, games: games} for name, games of playerGames]
-      |> sort-by (.games)
-      |> reverse
-    render freqData
+  freqData = [{name: name, games: games} for name, games of playerGames]
+    |> sort-by (.games)
+    |> reverse
+  render freqData
 

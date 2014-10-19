@@ -32,3 +32,40 @@
     display: none;
   }
 }
+
+#chartPlayerSuccessIndex {
+  height: 400px;
+  max-width: 900px;
+  background-color: #fff;
+
+  .bar.positive {
+    fill: steelblue;
+  }
+  .bar.negative {
+    fill: brown;
+  }
+  .bar.neutral {
+    fill: gray;
+  }
+
+  .barLabel {
+    text-anchor: end;
+    dominant-baseline: text-before-edge;
+    font: 10px sans-serif;
+    fill: #fff;
+  }
+
+  .axis {
+    font: 10px sans-serif;
+  }
+
+  .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .x.axis path {
+    display: none;
+  }
+}
