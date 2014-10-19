@@ -7,7 +7,7 @@ chartPlayerWinRelations = (data) ->
     find-node = (p) -> find (-> it.name == p), nodes
     player-links = (p, rs) ->
       src = find-node p
-      make-link = (r) -> {w: r.total, n: r.n, source: src, target: find-node r.opponent}
+      make-link = (r) -> {w: r.w, n: r.n, source: src, target: find-node r.opponent}
       filter (-> it.total > 0), rs
         |> map make-link
     links = concat-map (-> player-links it.name, it.totals), data
@@ -158,7 +158,7 @@ chartPlayerWinRelations = (data) ->
     |> map (-> {name: it.name, results: playerOpponentResults it.results})
 
   playerTotals = (rs) ->
-    [{opponent: r.opponent, total: (sum r.results), n: r.results.length} for r in rs]
+    [{opponent: r.opponent, total: (sum r.results), w: (filter (> 0), r.results).length, n: r.results.length} for r in rs]
 
   playerOpponentTotals = playerOpponentResults
     |> map (-> {name: it.name, totals: playerTotals it.results})
