@@ -69,3 +69,32 @@
     display: none;
   }
 }
+
+#chartPlayerWinRelations {
+  height: 600px;
+  max-width: 600px;
+  background-color: #fff;
+
+  path.link {
+    fill: none;
+    stroke: #bbb;
+    stroke-width: 4px;
+    cursor: default;
+  }
+
+  circle.node {
+    stroke-width: 1.5px;
+  }
+
+  text {
+    font: 12px sans-serif;
+    fill: #444;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  text.id {
+    text-anchor: middle;
+    font-weight: bold;
+  }
+}
