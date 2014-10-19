@@ -60,7 +60,7 @@ chartPlayerSuccessIndex = (data) ->
       .attr "class", "barLabel"
       .attr "x", (d) -> x(d.value) - 4
       .attr "y", (d) -> y(d.name)  + 4
-      .text (.value)
+      .text (d) -> d.value.toFixed(2)
 
   gameWinScore = (g) -> (.score) <| maximum-by (.score), g.teams
   isWinner = (g) -> let s = gameWinScore g
