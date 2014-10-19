@@ -47,46 +47,46 @@ chartPlayerWinRelations = (data) ->
 
 
     force = d3.layout.force()
-      .nodes(nodes)
-      .links(links)
-      .size([width, height])
-      .linkDistance(100)
-      .gravity(0.1)
-      .charge(-500)
-      .on('tick', tick)
+      .nodes nodes
+      .links links
+      .size [width, height]
+      .linkDistance 100
+      .gravity 0.1
+      .charge -500
+      .on 'tick', tick
 
     svg.append('svg:defs').append('svg:marker')
-      .attr('id', 'end-arrow')
-      .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 6)
-      .attr('markerWidth', 3)
-      .attr('markerHeight', 3)
-      .attr('orient', 'auto')
-      .append('svg:path')
-      .attr('d', 'M0,-5L10,0L0,5')
-      .attr('fill', '#aaa');
+      .attr 'id', 'end-arrow'
+      .attr 'viewBox', '0 -5 10 10'
+      .attr 'refX', 6
+      .attr 'markerWidth', 3
+      .attr 'markerHeight', 3
+      .attr 'orient', 'auto'
+      .append 'svg:path'
+      .attr 'd', 'M0,-5L10,0L0,5'
+      .attr 'fill', '#aaa'
 
     path = svg.append('svg:g').selectAll('path')
-    circle = svg.append('svg:g').selectAll('g');
+    circle = svg.append('svg:g').selectAll('g')
 
-    path = path.data(links);
+    path = path.data links
 
     path = path.enter().append('svg:path')
-      .attr('class', 'link')
-      .style('marker-end', 'url(\#end-arrow)')
+      .attr 'class', 'link'
+      .style 'marker-end', 'url(#end-arrow)'
 
     pathText = svg.append('svg:g').selectAll('text').data(links)
     pathText.enter().append('svg:text')
-      .attr('class', 'linkText')
-      .attr('y', '2px')
+      .attr 'class', 'linkText'
+      .attr 'y', '2px'
       .text (-> parseInt(100 * it.w / it.n) + '%')
 
     circle = circle.data(nodes, (.name));
     g = circle.enter().append('svg:g')
 
     g.append('svg:circle')
-      .attr('class', 'node')
-      .attr('r', 12)
+      .attr 'class', 'node'
+      .attr 'r', 12
       .attr 'fill', ->
         | it.value < -0.25 => '#eaa'
         | it.value > 0.25 => '#aea'
@@ -94,7 +94,7 @@ chartPlayerWinRelations = (data) ->
       .call force.drag
 
     g.append('svg:text')
-      .attr('class', 'id')
+      .attr 'class', 'id'
       .text (.name)
 
     do force.start
