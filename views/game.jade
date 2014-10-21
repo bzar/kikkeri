@@ -1,0 +1,22 @@
+extends layout.jade
+
+block title
+  title Kikkeri - Peli
+
+block content
+  h1= moment(game.timestamp).format("YYYY-MM-DD HH:mm")
+  #tags
+    each tag in game.tags
+      span= tag
+  #teams
+    span= game.teams[0].players[0]
+    span  vs 
+    span= game.teams[1].players[0]
+  #score
+    span= game.teams[0].score
+    span  - 
+    span= game.teams[1].score
+  
+  
+          
+

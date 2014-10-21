@@ -11,6 +11,7 @@ gameSchema = mongoose.Schema {
     score: Number
   }]
   timestamp: Date
+  tags: [String]
 }
 
 Game = mongoose.model 'Game', gameSchema
@@ -23,15 +24,27 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
 
 app.get '/', (req, res) ->
-  Game.find (err, games) ->
-    res.render 'index', {games: games}
+  res.render 'index'
 
 app.get '/charts.html', (req, res) ->
   res.render 'charts'
 
+app.get '/game.html', (req, res) ->
+  res.render 'charts'
+
 app.get '/game/', (req, res) ->
+  format = req.accepts ['json', 'html']
+  if not format
+    res.status(500).send {success: false, reason: 'No suitable format available'}
+    return
+
   Game.find (err, games) ->
-    res.send games
+    if err
+      res.status(500).send {success: false, reason: err}
+    else if format == 'json'
+      res.send games
+    else if format == 'html'
+      res.render 'games', {games: games}
 
 app.post '/game/', (req, res) ->
   game = new Game req.body
@@ -47,5 +60,28 @@ app.post '/game/', (req, res) ->
     else
       res.status(500).send {success: false, reason: err}
 
+
+app.get '/game/:id/', (req, res) ->
+  format = req.accepts ['json', 'html']
+  if not format
+    res.status(500).send {success: false, reason: 'No suitable format available'}
+    return
+
+  Game.findById (req.param 'id'), (err, game) ->
+    if err
+      res.status(500).send {success: false, reason: 'game not found'}
+    else if format == 'json'
+      res.send game
+    else if format == 'html'
+      res.render 'game', {game: game}
+
+app.put '/game/:id/', (req, res) ->
+  Game.findById (req.param 'id'), (err, game) ->
+    if err
+      res.status(500).send {success: false, reason: 'game not found'}
+    else
+      game.teams = req.body.teams
+      game.tags = req.body.tags
+      res.send {success: true}
 
 app.listen 3000
