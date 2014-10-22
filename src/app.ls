@@ -23,7 +23,8 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
   app.set('view engine', 'jade')
 
   app.get '/', (req, res) ->
-    res.render 'index'
+    Game.find {}, null, {sort: {timestamp: -1}, limit: 5} (err, games) ->
+      res.render 'index', {games: games}
 
   app.get '/charts/', (req, res) ->
     res.render 'charts'

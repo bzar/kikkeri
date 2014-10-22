@@ -21,3 +21,17 @@ block content
           input#tags(type='text', placeholder='Tagit')
         li
           input(type='submit', value='Lähetä')
+  h2 Viimeisimmät pelit
+  section
+    ul#games
+      each game in games
+        li
+          a(href='/game/' + game._id)
+            span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
+            span= game.teams[0].players[0]
+            span  vs 
+            span= game.teams[1].players[0]
+            span  | 
+            span= game.teams[0].score
+            span  - 
+            span= game.teams[1].score
