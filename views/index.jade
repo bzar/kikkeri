@@ -4,7 +4,7 @@ block title
   title Kikkeri
 
 block scripts
-  script(src='web/index.js')
+  script(src='web/index.js', type='application/javascript')
 
 block content
   h1 Lisää kikkeritulos
@@ -16,5 +16,7 @@ block content
       li
         input#player2(type='text', placeholder='Nimi 2' required)
         input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required)
+      li
+        input#tags(type='text', placeholder='Tagit')
       li
         input(type='submit', value='Lähetä')

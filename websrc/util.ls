@@ -16,4 +16,4 @@ getJson = (url, onload, onerror) ->
   request.onerror = onerror
   request.send();
 
-
+onComplete = (f) -> document.onreadystatechange = -> if document.readyState == "complete" then do f

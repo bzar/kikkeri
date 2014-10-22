@@ -2,7 +2,7 @@ chartPlayerSuccessIndex = (data) ->
   {partition, maximum-by, sort-by, reverse, concat-map, map, group-by, sum, average} = require "prelude-ls"
 
   render = (data) ->
-    parent = d3.select "\#chartPlayerSuccessIndex"
+    parent = d3.select '#chartPlayerSuccessIndex'
     margin = {top: 20, right: 20, bottom: 30, left: 140}
     width = parent[0][0].clientWidth - margin.left - margin.right
     height = parent[0][0].clientHeight - margin.top - margin.bottom

@@ -2,7 +2,7 @@ chartPlayerGames = (data) ->
   {sort, sort-by, reverse, concat-map, count-by, id} = require "prelude-ls"
 
   render = (data) ->
-    parent = d3.select "\#chartPlayerGames"
+    parent = d3.select '#chartPlayerGames'
     margin = {top: 20, right: 20, bottom: 30, left: 140}
     width = parent[0][0].clientWidth - margin.left - margin.right
     height = parent[0][0].clientHeight - margin.top - margin.bottom
