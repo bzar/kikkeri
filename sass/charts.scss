@@ -1,7 +1,7 @@
 #chartPlayerGames {
-  height: 400px;
-  max-width: 900px;
   background-color: #fff;
+  max-width: 900px;
+  height: 400px;
 
   .bar {
     fill: steelblue;
@@ -72,7 +72,7 @@
 
 #chartPlayerWinRelations {
   height: 600px;
-  max-width: 600px;
+  max-width: 900px;
   background-color: #fff;
 
   path.link {

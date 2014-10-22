@@ -26,10 +26,6 @@ nav {
   border-radius: 8px;
 }
 form {
-  padding: 16px;
-  border-radius: 8px;
-  background-color: #fff;
-
   ul {
     padding: 0;
     margin: 0;
@@ -46,13 +42,31 @@ form {
 }
 
 #games {
-  padding: 8px;
-  border-radius: 8px;
-  background-color: #fff;
-  
   li {
     list-style: none;
     padding: 4px;
     margin: 0;
   }
+}
+
+section {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fff;
+  max-width: 1000px;
+}
+
+h1 {
+  font-family: sans-serif;
+}
+h2 {
+  font-family: sans-serif;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6px;
+  margin: 0 8px 8px 0;
+  border-radius: 4px;
+  background-color: #ccf;
 }

@@ -8,15 +8,16 @@ block scripts
 
 block content
   h1 Lisää kikkeritulos
-  form(action='game/simple/', method='post')
-    ul
-      li
-        input#player1(type='text', placeholder='Nimi 1' required)
-        input#score1(type='number' placeholder='Pisteet 1' min='0' max='10' required)
-      li
-        input#player2(type='text', placeholder='Nimi 2' required)
-        input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required)
-      li
-        input#tags(type='text', placeholder='Tagit')
-      li
-        input(type='submit', value='Lähetä')
+  section
+    form(action='game/simple/', method='post')
+      ul
+        li
+          input#player1(type='text', placeholder='Nimi 1' required)
+          input#score1(type='number' placeholder='Pisteet 1' min='0' max='10' required)
+        li
+          input#player2(type='text', placeholder='Nimi 2' required)
+          input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required)
+        li
+          input#tags(type='text', placeholder='Tagit')
+        li
+          input(type='submit', value='Lähetä')

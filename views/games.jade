@@ -5,16 +5,17 @@ block title
 
 block content
   h1 Pelatut pelit
-  ul#games
-    each game in games
-      li
-        a(href=game._id)
-          span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
-          span= game.teams[0].players[0]
-          span  vs 
-          span= game.teams[1].players[0]
-          span  | 
-          span= game.teams[0].score
-          span  - 
-          span= game.teams[1].score
+  section
+    ul#games
+      each game in games
+        li
+          a(href=game._id)
+            span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
+            span= game.teams[0].players[0]
+            span  vs 
+            span= game.teams[1].players[0]
+            span  | 
+            span= game.teams[0].score
+            span  - 
+            span= game.teams[1].score
 
