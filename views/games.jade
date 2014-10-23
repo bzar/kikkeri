@@ -11,9 +11,9 @@ block content
         li
           a(href=game._id)
             span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
-            span= game.teams[0].players[0]
+            span= game.teams[0].players.join(', ')
             span  vs 
-            span= game.teams[1].players[0]
+            span= game.teams[1].players.join(', ')
             span  | 
             span= game.teams[0].score
             span  - 

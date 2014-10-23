@@ -2,20 +2,20 @@ onComplete ->
   form = document.querySelector 'form'
   form.onsubmit = (e) ->
     do e.preventDefault
-    tagString = document.querySelector('#tags').value
-    tags = if tagString then tagString.split /[, ]+/ else []
+    splitList = -> (it.split /[, ]/).filter -> it
+
     game = {
       teams: [
         {
-          players: [document.querySelector('#player1').value]
+          players: splitList document.querySelector('#team1').value
           score: parseInt(document.querySelector('#score1').value)
         }
         {
-          players: [document.querySelector('#player2').value]
+          players: splitList document.querySelector('#team2').value
           score: parseInt(document.querySelector('#score2').value)
         }
       ]
-      tags: tags
+      tags: splitList document.querySelector('#tags').value
     }
 
     postJson 'game/', game, (response) ->

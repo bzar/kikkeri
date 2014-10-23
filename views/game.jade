@@ -10,9 +10,9 @@ block content
       each tag in game.tags
         span.tag= tag
     #teams
-      span= game.teams[0].players[0]
+      span= game.teams[0].players.join(', ')
       span  vs 
-      span= game.teams[1].players[0]
+      span= game.teams[1].players.join(', ')
     #score
       span= game.teams[0].score
       span  - 
