@@ -1,16 +1,21 @@
 chartPlayerWinRelations = (data) ->
   {average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum} = require "prelude-ls"
   render = (data) ->
+    selected = null
     player-value = (p) -> average <| map (.total), p.totals
-    nodes = data
-      |> map (-> {name: it.name, value: player-value it})
-    find-node = (p) -> find (-> it.name == p), nodes
-    player-links = (p, rs) ->
-      src = find-node p
-      make-link = (r) -> {w: r.w, n: r.n, source: src, target: find-node r.opponent}
-      filter (-> it.total > 0), rs
-        |> map make-link
-    links = concat-map (-> player-links it.name, it.totals), data
+
+    refresh-data = ->
+      nodes = data
+        |> map (-> {name: it.name, value: player-value it})
+      find-node = (p) -> find (-> it.name == p), nodes
+      player-links = (p, rs) ->
+        src = find-node p
+        make-link = (r) -> {w: r.w, n: r.n, source: src, target: find-node r.opponent}
+        filter (-> it.total > 0), rs
+          |> filter (-> selected == null or p in selected or it.opponent in selected)
+          |> map make-link
+      links = concat-map (-> player-links it.name, it.totals), data
+      return [nodes, links]
 
     parent = d3.select '#chartPlayerWinRelations'
     margin = {top: 20, right: 20, bottom: 20, left: 20}
@@ -21,8 +26,27 @@ chartPlayerWinRelations = (data) ->
       .append "svg"
         .attr "width", width + margin.left + margin.right
         .attr "height", height + margin.top + margin.bottom
+        .on "click", ->
+          if selected != null
+            selected := null
+            do refresh
         .append "g"
           .attr "transform", "translate(#{margin.left},#{margin.top})"
+
+    svg.append('svg:defs').append('svg:marker')
+      .attr 'id', 'end-arrow'
+      .attr 'viewBox', '0 -5 10 10'
+      .attr 'refX', 6
+      .attr 'markerWidth', 3
+      .attr 'markerHeight', 3
+      .attr 'orient', 'auto'
+      .append 'svg:path'
+      .attr 'd', 'M0,-5L10,0L0,5'
+      .attr 'fill', '#aaa'
+
+    path = svg.append('svg:g').selectAll('path')
+    circle = svg.append('svg:g').selectAll('g')
+    pathText = svg.append('svg:g').selectAll('text')
 
     tick = ->
       path.attr 'd', (d) ->
@@ -47,57 +71,55 @@ chartPlayerWinRelations = (data) ->
 
 
     force = d3.layout.force()
-      .nodes nodes
-      .links links
       .size [width, height]
       .linkDistance 100
       .gravity 0.1
       .charge -500
       .on 'tick', tick
 
-    svg.append('svg:defs').append('svg:marker')
-      .attr 'id', 'end-arrow'
-      .attr 'viewBox', '0 -5 10 10'
-      .attr 'refX', 6
-      .attr 'markerWidth', 3
-      .attr 'markerHeight', 3
-      .attr 'orient', 'auto'
-      .append 'svg:path'
-      .attr 'd', 'M0,-5L10,0L0,5'
-      .attr 'fill', '#aaa'
+    refresh = ->
+      [nodes, links] = do refresh-data
+      force.nodes nodes
+      force.links links
+      path := path.data(links)
+      circle := circle.data(nodes, (.name))
+      pathText := pathText.data(links)
+      path.enter().append('svg:path')
+        .attr 'class', 'link'
+        .style 'marker-end', 'url(#end-arrow)'
 
-    path = svg.append('svg:g').selectAll('path')
-    circle = svg.append('svg:g').selectAll('g')
+      path.exit().remove()
 
-    path = path.data links
+      pathText.enter().append('svg:text')
+        .attr 'class', 'linkText'
+        .attr 'y', '2px'
+        .text (-> parseInt(100 * it.w / it.n) + '%')
 
-    path = path.enter().append('svg:path')
-      .attr 'class', 'link'
-      .style 'marker-end', 'url(#end-arrow)'
+      pathText.exit().remove()
 
-    pathText = svg.append('svg:g').selectAll('text').data(links)
-    pathText.enter().append('svg:text')
-      .attr 'class', 'linkText'
-      .attr 'y', '2px'
-      .text (-> parseInt(100 * it.w / it.n) + '%')
+      g = circle.enter().append('svg:g')
+      circle.exit().remove()
 
-    circle = circle.data(nodes, (.name));
-    g = circle.enter().append('svg:g')
+      g.append('svg:circle')
+        .attr 'class', 'node'
+        .attr 'r', 12
+        .on 'click', (d) ->
+          d3.event.stopPropagation()
+          selected := [d.name]
+          do refresh
+        .attr 'fill', ->
+          | it.value < -0.25 => '#eaa'
+          | it.value > 0.25 => '#aea'
+          | otherwise => '#eea'
+        .call force.drag
 
-    g.append('svg:circle')
-      .attr 'class', 'node'
-      .attr 'r', 12
-      .attr 'fill', ->
-        | it.value < -0.25 => '#eaa'
-        | it.value > 0.25 => '#aea'
-        | otherwise => '#eea'
-      .call force.drag
+      g.append('svg:text')
+        .attr 'class', 'id'
+        .text (.name)
 
-    g.append('svg:text')
-      .attr 'class', 'id'
-      .text (.name)
+      do force.start
 
-    do force.start
+    do refresh
 
 
   obj-to-list = (kname, vname, o) --> [{(kname): k, (vname): v} for k, v of o]
