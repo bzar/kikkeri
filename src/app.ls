@@ -2,6 +2,7 @@ require! 'express'
 require! 'mongoose'
 require! 'body-parser'
 require! 'moment'
+require! './config'
 {all, map} = require 'prelude-ls'
 
 gameSchema = mongoose.Schema {
@@ -24,10 +25,10 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.get '/', (req, res) ->
     Game.find {}, null, {sort: {timestamp: -1}, limit: 5} (err, games) ->
-      res.render 'index', {games: games}
+      res.render 'index', {config: config, games: games}
 
   app.get '/charts/', (req, res) ->
-    res.render 'charts'
+    res.render 'charts' {config: config}
 
   app.get '/game/', (req, res) ->
     format = req.accepts ['json', 'html']
@@ -41,7 +42,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       else if format == 'json'
         res.send games
       else if format == 'html'
-        res.render 'games', {games: games}
+        res.render 'games', {config: config, games: games}
 
   app.post '/game/', (req, res) ->
     game = new Game req.body
@@ -70,7 +71,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       else if format == 'json'
         res.send game
       else if format == 'html'
-        res.render 'game', {game: game}
+        res.render 'game', {config: config, game: game}
 
   app.put '/game/:id/', (req, res) ->
     Game.findById (req.param 'id'), (err, game) ->

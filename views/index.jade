@@ -4,12 +4,12 @@ block title
   title Kikkeri
 
 block scripts
-  script(src='web/index.js', type='application/javascript')
+  script(src=config.path+'/web/index.js', type='application/javascript')
 
 block content
   h1 Lisää kikkeritulos
   section
-    form(action='game/simple/', method='post')
+    form
       ul
         li
           input#team1(type='text', placeholder='Joukkue 1' required)
@@ -26,7 +26,7 @@ block content
     ul#games
       each game in games
         li
-          a(href='/game/' + game._id)
+          a(href=config.path+'/game/' + game._id)
             span= moment(game.timestamp).format("YYYY-MM-DD HH:mm ")
             span= game.teams[0].players.join(', ')
             span  vs 

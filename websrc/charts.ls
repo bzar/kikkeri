@@ -1,5 +1,5 @@
 onComplete ->
-  getJson "/game/", (data) ->
+  getJson "../game/", (data) ->
     chartPlayerGames data
     chartPlayerSuccessIndex data
     chartPlayerWinRelations data

@@ -3,19 +3,19 @@ html
     block title
       title Kikkeri
     meta(name='viewport', content='width=device-width, initial-scale=1')
-    script(src='/web/util.js', type='application/javascript')
+    script(src=config.path+'/web/util.js', type='application/javascript')
     block scripts
-    link(rel='stylesheet', href='/web/style.css')
+    link(rel='stylesheet', href=config.path+'/web/style.css')
     block styles
   body
     nav
       ul
         li
-          a(href='/') Lisää tulos
+          a(href=config.path+'/') Lisää tulos
         li
-          a(href='/game/') Pelatut pelit
+          a(href=config.path+'/game/') Pelatut pelit
         li
-          a(href='/charts/') Tilastoja
+          a(href=config.path+'/charts/') Tilastoja
  
     #content
       block content
