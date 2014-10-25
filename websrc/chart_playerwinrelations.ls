@@ -1,5 +1,5 @@
 chartPlayerWinRelations = (data) ->
-  {average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum} = require "prelude-ls"
+  {empty, average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum} = require "prelude-ls"
   render = (data) ->
     selected = null
     player-value = (p) -> average <| map (.total), p.totals
@@ -103,20 +103,21 @@ chartPlayerWinRelations = (data) ->
       g.append('svg:circle')
         .attr 'class', 'node'
         .attr 'r', 12
-        .on 'click', (d) ->
-          d3.event.stopPropagation()
-          selected := [d.name]
-          do refresh
         .attr 'fill', ->
           | it.value < -0.25 => '#eaa'
           | it.value > 0.25 => '#aea'
           | otherwise => '#eea'
-        .call force.drag
 
       g.append('svg:text')
         .attr 'class', 'id'
         .text (.name)
 
+      circle.call force.drag
+        .on 'click', (d) ->
+          do d3.event.stopPropagation
+          if not d3.event.defaultPrevented
+            selected := [d.name]
+            do refresh
       do force.start
 
     do refresh
