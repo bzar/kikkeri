@@ -46,7 +46,7 @@ gulp.task('nodemon', function() {
     script: 'build/app.js',
     ext: 'js',
     env: {'NODE_ENV': 'development'},
-    watch: ['build/*']
+    watch: ['build/*', 'build/views/*']
   });
 });
 gulp.task('dev', ['build', 'watch', 'nodemon']);

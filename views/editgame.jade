@@ -1,0 +1,24 @@
+extends layout.jade
+
+block title
+  title Kikkeri - Muokkaa peliä
+
+block scripts
+  script(src=config.path+'/web/editgame.js', type='application/javascript')
+
+block content
+  h1= moment(game.timestamp).format("YYYY-MM-DD HH:mm")
+  section
+    form
+      ul
+        li
+          input#team1(type='text', placeholder='Joukkue 1' required value=game.teams[0].players.join(', '))
+          input#score1(type='number' placeholder='Pisteet 1' min='0' max='10' required value=game.teams[0].score)
+        li
+          input#team2(type='text', placeholder='Joukkue 2' required value=game.teams[1].players.join(', '))
+          input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required value=game.teams[1].score)
+        li
+          input#tags(type='text', placeholder='Tagit' value=game.tags.join(', '))
+        li
+          input(type='submit', value='Päivitä')
+

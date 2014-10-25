@@ -7,6 +7,15 @@ postJson = (url, data, onload, onerror) ->
   request.onerror = onerror
   request.send(JSON.stringify(data));
 
+putJson = (url, data, onload, onerror) ->
+  request = new XMLHttpRequest();
+  request.open('PUT', url, true);
+  request.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+  request.onload = ->
+    onload(JSON.parse(request.responseText))
+  request.onerror = onerror
+  request.send(JSON.stringify(data));
+
 getJson = (url, onload, onerror) ->
   request = new XMLHttpRequest();
   request.open('GET', url, true);

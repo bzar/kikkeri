@@ -59,6 +59,13 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         res.status(500).send {success: false, reason: err}
 
 
+  app.get '/game/:id/edit', (req, res) ->
+    Game.findById (req.param 'id'), (err, game) ->
+      if err
+        res.status(500).send {success: false, reason: 'game not found'}
+      else
+        res.render 'editgame', {config: config, game: game}
+
   app.get '/game/:id/', (req, res) ->
     format = req.accepts ['json', 'html']
     if not format
@@ -80,6 +87,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       else
         game.teams = req.body.teams
         game.tags = req.body.tags
+        game.save()
         res.send {success: true}
 
   app.listen 3000
