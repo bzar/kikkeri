@@ -59,7 +59,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         res.status(500).send {success: false, reason: err}
 
 
-  app.get '/game/:id/edit', (req, res) ->
+  app.get '/game/:id/edit/', (req, res) ->
     Game.findById (req.param 'id'), (err, game) ->
       if err
         res.status(500).send {success: false, reason: 'game not found'}
