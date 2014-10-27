@@ -37,7 +37,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       return
 
     criteria = req-to-game-criteria req
-    Game.find criteria, (err, games) ->
+    Game.find criteria, null, {sort: {timestamp: -1}}, (err, games) ->
       if err
         res.status(500).send {success: false, reason: err}
       else if format == 'json'
