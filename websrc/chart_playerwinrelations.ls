@@ -93,8 +93,8 @@ chartPlayerWinRelations = (data) ->
       pathText.enter().append('svg:text')
         .attr 'class', 'linkText'
         .attr 'y', '2px'
-        .text (-> parseInt(100 * it.w / it.n) + '%')
 
+      pathText.text (-> parseInt(100 * it.w / it.n) + '%')
       pathText.exit().remove()
 
       g = circle.enter().append('svg:g')
