@@ -65,8 +65,12 @@ h2 {
 
 .tag {
   display: inline-block;
-  padding: 6px;
-  margin: 0 8px 8px 0;
+  font-family: sans-serif;
+  font-weight: bold;
+  color: white !important;
+  font-size: x-small;
+  padding: 2px;
+  margin: 0 4px 0 4px;
   border-radius: 4px;
-  background-color: #ccf;
+  background-color: #99f;
 }

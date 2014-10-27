@@ -35,3 +35,5 @@ block content
             span= game.teams[0].score
             span  - 
             span= game.teams[1].score
+            each tag in game.tags
+              span.tag= tag
