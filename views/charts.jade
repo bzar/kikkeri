@@ -16,6 +16,15 @@ block styles
   link(rel='stylesheet', href=config.path+'/web/charts.css')
   
 block content
+  section
+    form#criteria(method='get' action='.')
+      ul
+        li
+          input#gameTags(placeholder='Pelin tagit', type='text', name='gameTags' value=query.gameTags)
+        li
+          input#players(placeholder='Pelaajat', type='text' name='players' value=query.players)
+        li
+          input(value='Suodata' type='submit')
   h2 Pelattuja pelejä
   section
     #chartPlayerGames

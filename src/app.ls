@@ -3,7 +3,7 @@ require! 'mongoose'
 require! 'body-parser'
 require! 'moment'
 require! './config'
-{all, map} = require 'prelude-ls'
+{filter, any, all, map} = require 'prelude-ls'
 
 gameSchema = mongoose.Schema {
   teams: [{
@@ -28,7 +28,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       res.render 'index', {config: config, games: games}
 
   app.get '/charts/', (req, res) ->
-    res.render 'charts' {config: config}
+    res.render 'charts' { config: config, query: req.query }
 
   app.get '/game/', (req, res) ->
     format = req.accepts ['json', 'html']
@@ -36,7 +36,8 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       res.status(500).send {success: false, reason: 'No suitable format available'}
       return
 
-    Game.find (err, games) ->
+    criteria = req-to-game-criteria req
+    Game.find criteria, (err, games) ->
       if err
         res.status(500).send {success: false, reason: err}
       else if format == 'json'
@@ -92,3 +93,16 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.listen 3000
 
+function req-to-game-criteria(req)
+  query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
+  gameTags = query-list 'gameTags'
+  players = query-list 'players'
+  criteria = {}
+
+  if gameTags?
+    criteria.{}tags.$in = gameTags
+
+  if players?
+    criteria.{}teams.{}$elemMatch.{}players.$in = players
+
+  return criteria

@@ -1,5 +1,5 @@
 onComplete ->
-  getJson "../game/", (data) ->
+  getJson "../game/" + document.location.search, (data) ->
     chartPlayerGames data
     chartPlayerSuccessIndex data
     chartPlayerWinRelations data
