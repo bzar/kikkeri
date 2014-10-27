@@ -72,9 +72,9 @@ chartPlayerWinRelations = (data) ->
 
     force = d3.layout.force()
       .size [width, height]
-      .linkDistance 100
-      .gravity 0.1
-      .charge -500
+      .linkDistance 150
+      .gravity 0.2
+      .charge -1000
       .on 'tick', tick
 
     refresh = ->
