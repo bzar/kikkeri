@@ -1,0 +1,11 @@
+form#criteria(method='get' action='.')
+  ul
+    li
+      input#gameTags(placeholder='Pelin tagit', type='text', name='gameTags' value=query.gameTags)
+    li
+      input#players(placeholder='Pelaajat', type='text' name='players' value=query.players)
+    li
+      input#numPlayers(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
+    li
+      input(value='Suodata' type='submit')
+
