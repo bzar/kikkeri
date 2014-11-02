@@ -106,7 +106,6 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
 function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
-
   criteria-game-tags = (tags) ->
     | not tags? or empty tags => []
     | otherwise => [{$match: {tags: {$in: tags}}}]
@@ -128,15 +127,25 @@ function req-to-game-aggregate-pipeline(req)
       }}
       {$match: {number_of_players: n}}]
 
+  criteria-date-since = (d) ->
+    | not d.getYear() => []
+    | otherwise => [{$match: {timestamp: {$gt: d}}}]
+
+  criteria-date-until = (d) ->
+    | not d.getYear() => []
+    | otherwise => [{$match: {timestamp: {$lt: d}}}]
 
   gameTags = query-list 'gameTags'
   players = query-list 'players'
   numPlayers = parseInt req.query.numPlayers
-
+  date-since =  new Date(Date.parse(req.query.since) - 1)
+  date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
   pipeline = concat [
     criteria-game-tags gameTags
     criteria-players players
     criteria-num-players numPlayers
+    criteria-date-since date-since
+    criteria-date-until date-until
   ]
   pipeline.push {$sort: {timestamp: -1}}
   return pipeline

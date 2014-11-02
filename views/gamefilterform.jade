@@ -7,5 +7,9 @@ form#criteria(method='get' action='.')
     li
       input#numPlayers(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
     li
+      input#since(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
+    li
+      input#until(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
+    li
       input(value='Suodata' type='submit')
 
