@@ -56,6 +56,11 @@ section {
   max-width: 1000px;
 }
 
+section.stretch {
+  max-width: none;
+  display: inline-block;
+}
+
 h1 {
   font-family: sans-serif;
 }

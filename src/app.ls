@@ -3,6 +3,8 @@ require! 'mongoose'
 require! 'body-parser'
 require! 'moment'
 require! './config'
+require! './table-view'
+
 {filter, any, all, map} = require 'prelude-ls'
 
 gameSchema = mongoose.Schema {
@@ -28,7 +30,16 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       res.render 'index', {config: config, games: games}
 
   app.get '/charts/', (req, res) ->
-    res.render 'charts' { config: config, query: req.query }
+    res.render 'charts', { config: config, query: req.query }
+
+  app.get '/table/', (req, res) ->
+    criteria = req-to-game-criteria req
+    Game.find criteria, (err, games) ->
+      if err
+        res.status(500).send {success: false, reason: err}
+      else
+        data = table-view.process-game-table-data games
+        res.render 'table', { config: config, query: req.query, data: data }
 
   app.get '/game/', (req, res) ->
     format = req.accepts ['json', 'html']
