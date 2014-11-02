@@ -4,42 +4,36 @@ block title
   title Kikkeri - Pelitaulukko
 
 block scripts
-  script(src='http://d3js.org/d3.v3.min.js', type='application/javascript')
-  script(src=config.path+'/web/prelude-browser-min.js', type='application/javascript')
-  script(src=config.path+'/web/table.js', type='application/javascript')
 
 block styles
   link(rel='stylesheet', href=config.path+'/web/table.css')
   
 block content
   section
-    form#criteria(method='get' action='.')
-      ul
-        li
-          input#gameTags(placeholder='Pelin tagit', type='text', name='gameTags' value=query.gameTags)
-        li
-          input#players(placeholder='Pelaajat', type='text' name='players' value=query.players)
-        li
-          input(value='Suodata' type='submit')
+    include gamefilterform.jade
   h2 Pelitaulukko
-  section.stretch
-    table#gameTable
-      thead
-        tr
-          th
-          each playerData, team in data
-            th= team
-          th Yhteensä
-      tbody
-        each playerData, team in data
+  if !data || Object.keys(data).length == 0
+    section
+      p Ei tuloksia
+  else
+    section.stretch
+      table#gameTable
+        thead
           tr
-            th=team
-            each pd, t in data
-              if playerData.opponents[t]
-                td #{playerData.opponents[t].wins}!{"\&nbsp;-\&nbsp;"}#{playerData.opponents[t].losses}
-              else
-                td -
-            th #{playerData.wins}!{"\&nbsp;-\&nbsp;"}#{playerData.losses}
-            
-    
+            th
+            each playerData, team in data
+              th= team
+            th Yhteensä
+        tbody
+          each playerData, team in data
+            tr
+              th=team
+              each pd, t in data
+                if playerData.opponents[t]
+                  td #{playerData.opponents[t].wins}!{"\&nbsp;-\&nbsp;"}#{playerData.opponents[t].losses}
+                else
+                  td -
+              th #{playerData.wins}!{"\&nbsp;-\&nbsp;"}#{playerData.losses}
+              
+      
 

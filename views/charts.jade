@@ -17,14 +17,7 @@ block styles
   
 block content
   section
-    form#criteria(method='get' action='.')
-      ul
-        li
-          input#gameTags(placeholder='Pelin tagit', type='text', name='gameTags' value=query.gameTags)
-        li
-          input#players(placeholder='Pelaajat', type='text' name='players' value=query.players)
-        li
-          input(value='Suodata' type='submit')
+    include gamefilterform.jade
   h2 Pelattuja pelejä
   section
     #chartPlayerGames

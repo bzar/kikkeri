@@ -4,6 +4,8 @@ block title
   title Kikkeri - Pelit
 
 block content
+  section
+    include gamefilterform.jade
   h1 Pelatut pelit
   section
     ul#games
@@ -18,6 +20,7 @@ block content
             span= game.teams[0].score
             span  - 
             span= game.teams[1].score
-            each tag in game.tags
-              span.tag= tag
+            if game.tags
+              each tag in game.tags
+                span.tag= tag
 

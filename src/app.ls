@@ -5,7 +5,7 @@ require! 'moment'
 require! './config'
 require! './table-view'
 
-{filter, any, all, map} = require 'prelude-ls'
+{empty, concat, filter, any, all, map} = require 'prelude-ls'
 
 gameSchema = mongoose.Schema {
   teams: [{
@@ -33,8 +33,8 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
     res.render 'charts', { config: config, query: req.query }
 
   app.get '/table/', (req, res) ->
-    criteria = req-to-game-criteria req
-    Game.find criteria, (err, games) ->
+    pipeline = req-to-game-aggregate-pipeline req
+    Game.aggregate pipeline, (err, games) ->
       if err
         res.status(500).send {success: false, reason: err}
       else
@@ -47,14 +47,14 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       res.status(500).send {success: false, reason: 'No suitable format available'}
       return
 
-    criteria = req-to-game-criteria req
-    Game.find criteria, null, {sort: {timestamp: -1}}, (err, games) ->
+    pipeline = req-to-game-aggregate-pipeline req
+    Game.aggregate pipeline, (err, games) ->
       if err
         res.status(500).send {success: false, reason: err}
       else if format == 'json'
         res.send games
       else if format == 'html'
-        res.render 'games', {config: config, games: games}
+        res.render 'games', {config: config, query: req.query, games: games}
 
   app.post '/game/', (req, res) ->
     game = new Game req.body
@@ -104,16 +104,40 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.listen 3000
 
-function req-to-game-criteria(req)
+function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
+
+  criteria-game-tags = (tags) ->
+    | not tags? or empty tags => []
+    | otherwise => [{$match: {tags: {$in: tags}}}]
+
+  criteria-players = (names) ->
+    | not names? or empty names => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: names}}}}}]
+
+  criteria-num-players = (n) ->
+    | not n > 0 => []
+    | otherwise => [
+      {$unwind: "$teams"}
+      {$group: {
+        _id: "$_id"
+        number_of_players: {$sum: {$size: "$teams.players" }}
+        teams: {$push: "$teams"}
+        timestamp: {$first: "$timestamp"}
+        tags: {$first: "$tags"}
+      }}
+      {$match: {number_of_players: n}}]
+
+
   gameTags = query-list 'gameTags'
   players = query-list 'players'
-  criteria = {}
+  numPlayers = parseInt req.query.numPlayers
 
-  if gameTags?
-    criteria.{}tags.$in = gameTags
+  pipeline = concat [
+    criteria-game-tags gameTags
+    criteria-players players
+    criteria-num-players numPlayers
+  ]
+  pipeline.push {$sort: {timestamp: -1}}
+  return pipeline
 
-  if players?
-    criteria.{}teams.{}$elemMatch.{}players.$in = players
-
-  return criteria
