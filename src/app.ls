@@ -49,11 +49,12 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
     Game.find {}, null, {sort: {timestamp: -1}, limit: 5} (err, games) ->
       if err
         res.status(500).send {success: false, reason: err}
-      latestTags 10, (err, tags) ->
-        if err
-          res.status(500).send {success: false, reason: err}
-        else
-          res.render 'index', {config: config, games: games, tags: tags}
+      else
+        latestTags 10, (err, tags) ->
+          if err
+            res.status(500).send {success: false, reason: err}
+          else
+            res.render 'index', {config: config, games: games, tags: tags}
 
   app.get '/charts/', (req, res) ->
     res.render 'charts', { config: config, query: req.query }
@@ -91,7 +92,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
     game.timestamp = new Date()
     game.save (err) ->
-      if not err?
+      if not err
         res.send {"success": true}
       else
         res.status(500).send {success: false, reason: err}
@@ -109,7 +110,11 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       if err
         res.status(500).send {success: false, reason: 'game not found'}
       else
-        res.render 'editgame', {config: config, game: game}
+        latestTags 10, (err, tags) ->
+          if err
+            res.status(500).send {success: false, reason: err}
+          else
+            res.render 'editgame', {config: config, game: game, tags: tags}
 
   app.get '/game/:id/', (req, res) ->
     format = req.accepts ['json', 'html']

@@ -19,6 +19,10 @@ block content
           input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required value=game.teams[1].score)
         li
           input#tags(type='text', placeholder='Tagit' value=game.tags.join(', '))
+          select#previousTags
+            option
+            each tag in tags
+              option= tag.join(', ')
         li
           input(type='submit', value='Päivitä')
 

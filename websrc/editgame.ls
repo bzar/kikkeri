@@ -22,4 +22,6 @@ onComplete ->
       if response.success
         window.location = '..'
 
+  document.querySelector('#previousTags').onchange = (e) ->
+    document.querySelector('#tags').value = this.value
 
