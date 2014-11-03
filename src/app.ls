@@ -17,6 +17,26 @@ gameSchema = mongoose.Schema {
 }
 
 Game = mongoose.model 'Game', gameSchema
+
+latestTags = (n, cb) ->
+  pipeline = [
+    {$match: {"tags.0": {$exists: true}}}
+    {$project: {tags: 1, timestamp: 1, _id: 0}}
+    {$group: { 
+      _id: "$tags", 
+      tags: {$first: "$tags"}, 
+      timestamp: {$max: "$timestamp"}}}
+    {$sort: {timestamp: -1}}
+  ]
+  if n?
+    pipeline.push {$limit: n}
+  Game.aggregate pipeline, (err, results) ->
+    if err?
+      cb err, []
+    else
+      tags = map (.tags), results
+      cb err, tags
+
 mongoose.connect 'mongodb://localhost/kikkeri', ->
   app = do express
   app.use('/web', express.static (__dirname + '/web'))
@@ -27,9 +47,13 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.get '/', (req, res) ->
     Game.find {}, null, {sort: {timestamp: -1}, limit: 5} (err, games) ->
-      Game.find {"tags.0": {$exists: true}}, {tags: 1, _id: 0}, {sort: {timestamp: -1}, limit: 10}, (err, results) ->
-        tags = map (.tags), results
-        res.render 'index', {config: config, games: games, tags: tags}
+      if err
+        res.status(500).send {success: false, reason: err}
+      latestTags 10, (err, tags) ->
+        if err
+          res.status(500).send {success: false, reason: err}
+        else
+          res.render 'index', {config: config, games: games, tags: tags}
 
   app.get '/charts/', (req, res) ->
     res.render 'charts', { config: config, query: req.query }
@@ -73,12 +97,10 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         res.status(500).send {success: false, reason: err}
 
   app.get '/game/tags/', (req, res) ->
-    n = req.query.n
-    Game.find {"tags.1": {$exists: true}}, {tags: 1, _id: 0}, {sort: {timestamp: -1}, limit: n}, (err, results) ->
+    latestTags req.query.n, (err, tags) ->
       if err
         res.status(500).send {success: false, reason: err}
       else
-        tags = map (.tags), results
         res.send tags
 
 
