@@ -146,7 +146,7 @@ function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
   criteria-game-tags = (tags) ->
     | not tags? or empty tags => []
-    | otherwise => [{$match: {tags: {$in: tags}}}]
+    | otherwise => [{$match: {tags: {$all: tags}}}]
 
   criteria-players = (names) ->
     | not names? or empty names => []
