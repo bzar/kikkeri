@@ -27,7 +27,9 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.get '/', (req, res) ->
     Game.find {}, null, {sort: {timestamp: -1}, limit: 5} (err, games) ->
-      res.render 'index', {config: config, games: games}
+      Game.find {"tags.0": {$exists: true}}, {tags: 1, _id: 0}, {sort: {timestamp: -1}, limit: 10}, (err, results) ->
+        tags = map (.tags), results
+        res.render 'index', {config: config, games: games, tags: tags}
 
   app.get '/charts/', (req, res) ->
     res.render 'charts', { config: config, query: req.query }
@@ -69,6 +71,15 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         res.send {"success": true}
       else
         res.status(500).send {success: false, reason: err}
+
+  app.get '/game/tags/', (req, res) ->
+    n = req.query.n
+    Game.find {"tags.1": {$exists: true}}, {tags: 1, _id: 0}, {sort: {timestamp: -1}, limit: n}, (err, results) ->
+      if err
+        res.status(500).send {success: false, reason: err}
+      else
+        tags = map (.tags), results
+        res.send tags
 
 
   app.get '/game/:id/edit/', (req, res) ->
