@@ -204,6 +204,7 @@ function req-to-game-aggregate-pipeline(req)
   date-since =  new Date(Date.parse(req.query.since) - 1)
   date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
   limit = parseInt req.query.limit
+  sorting = [{$sort: {timestamp: -1}}]
 
   pipeline = concat [
     criteria-game-tags gameTags
@@ -211,8 +212,8 @@ function req-to-game-aggregate-pipeline(req)
     criteria-num-players numPlayers
     criteria-date-since date-since
     criteria-date-until date-until
+    sorting
     criteria-limit limit
   ]
-  pipeline.push {$sort: {timestamp: -1}}
   return pipeline
 
