@@ -22,9 +22,9 @@ latestTags = (n, cb) ->
   pipeline = [
     {$match: {"tags.0": {$exists: true}}}
     {$project: {tags: 1, timestamp: 1, _id: 0}}
-    {$group: { 
-      _id: "$tags", 
-      tags: {$first: "$tags"}, 
+    {$group: {
+      _id: "$tags",
+      tags: {$first: "$tags"},
       timestamp: {$max: "$timestamp"}}}
     {$sort: {timestamp: -1}}
   ]
@@ -36,6 +36,21 @@ latestTags = (n, cb) ->
     else
       tags = map (.tags), results
       cb err, tags
+
+playerNames = (cb) ->
+  pipeline = [
+    {$unwind: "$teams"}
+    {$unwind: "$teams.players"}
+    {$group: {_id: "$teams.players"}}
+    {$sort: {_id: 1}}
+  ]
+
+  Game.aggregate pipeline, (err, results) ->
+    if err?
+      cb err, []
+    else
+      names = map (._id), results
+      cb err, names
 
 mongoose.connect 'mongodb://localhost/kikkeri', ->
   app = do express
@@ -104,6 +119,12 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       else
         res.send tags
 
+  app.get '/player/', (req, res) ->
+    playerNames (err, names) ->
+      if err
+        res.status(500).send {success: false, reason: err}
+      else
+        res.send names
 
   app.get '/game/:id/edit/', (req, res) ->
     Game.findById (req.param 'id'), (err, game) ->
