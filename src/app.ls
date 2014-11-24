@@ -194,17 +194,24 @@ function req-to-game-aggregate-pipeline(req)
     | not d.getYear() => []
     | otherwise => [{$match: {timestamp: {$lt: d}}}]
 
+  criteria-limit = (n) ->
+    | not n > 0 => []
+    | otherwise => [{$limit: n}]
+
   gameTags = query-list 'gameTags'
   players = query-list 'players'
   numPlayers = parseInt req.query.numPlayers
   date-since =  new Date(Date.parse(req.query.since) - 1)
   date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
+  limit = parseInt req.query.limit
+
   pipeline = concat [
     criteria-game-tags gameTags
     criteria-players players
     criteria-num-players numPlayers
     criteria-date-since date-since
     criteria-date-until date-until
+    criteria-limit limit
   ]
   pipeline.push {$sort: {timestamp: -1}}
   return pipeline
