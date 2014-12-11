@@ -169,9 +169,17 @@ function req-to-game-aggregate-pipeline(req)
     | not tags? or empty tags => []
     | otherwise => [{$match: {tags: {$all: tags}}}]
 
+  criteria-exclude-game-tags = (tags) ->
+    | not tags? or empty tags => []
+    | otherwise => [{$match: {tags: {$nin: tags}}}]
+
   criteria-players = (names) ->
     | not names? or empty names => []
     | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: names}}}}}]
+
+  criteria-exclude-players = (names) ->
+    | not names? or empty names => []
+    | otherwise => [{$match: {teams: {$not: {$elemMatch: {players: {$in: names}}}}}}]
 
   criteria-num-players = (n) ->
     | not n > 0 => []
@@ -199,7 +207,9 @@ function req-to-game-aggregate-pipeline(req)
     | otherwise => [{$limit: n}]
 
   gameTags = query-list 'gameTags'
+  excludeGameTags = query-list 'excludeGameTags'
   players = query-list 'players'
+  excludePlayers = query-list 'excludePlayers'
   numPlayers = parseInt req.query.numPlayers
   date-since =  new Date(Date.parse(req.query.since) - 1)
   date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
@@ -208,7 +218,9 @@ function req-to-game-aggregate-pipeline(req)
 
   pipeline = concat [
     criteria-game-tags gameTags
+    criteria-exclude-game-tags excludeGameTags
     criteria-players players
+    criteria-exclude-players excludePlayers
     criteria-num-players numPlayers
     criteria-date-since date-since
     criteria-date-until date-until
