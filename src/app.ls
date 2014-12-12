@@ -163,39 +163,37 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.listen 3000
 
-function parseInclude(words)
-  return words |> filter (or (!= /^[-]/) (!= /^[!]/))
+function parseOr(words)
+  return parseInclude(words).concat(words |> filter (!= /^[-]/) |> filter (!= /^[!]/) 
 
-function parseMust(words)
-  stuff = words |> filter (== /^[!]/) |> map (.substring(1))
-  console.log(":" + stuff)
-  return stuff
+function parseInclude(words)
+  return words |> filter (== /^[!]/) |> map (.substring(1))  
 
 function parseExclude(words)
-  return words |> filter (== /^[-]/) |> map (.substring(1))
+  return words |> filter (== /^[-]/) |> map (.substring(1)) 
 
 function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
 
   criteria-game-tags = (tags) ->
-    | not tags? or empty parseInclude(tags) => []
-    | otherwise => [{$match: {tags: {$all: parseInclude(tags)}}}]
+    | not tags? or empty parseOr(tags) => []
+    | otherwise => [{$match: {tags: {$in: parseOr(tags)}}}]
 
   criteria-must-game-tags = (tags) ->
-    | not tags? or empty parseMust(tags) => []
-    | otherwise => [{$match: {tags: {$and: parseMust(tags)}}}]
+    | not tags? or empty parseInclude(tags) => []
+    | otherwise => [{$match: {tags: {$all: parseInclude(tags)}}}]
 
   criteria-exclude-game-tags = (tags) ->
     | not tags? or empty parseExclude(tags) => []
     | otherwise => [{$match: {tags: {$nin: parseExclude(tags)}}}]
 
   criteria-players = (names) ->
-    | not names? or empty parseInclude(names) => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: parseInclude(names)}}}}}]
+    | not names? or empty parseOr(names) => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: parseOr(names)}}}}}]
 
   criteria-must-players = (names) ->
-    | not names? or empty parseMust(names) => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: parseMust(names)}}}}}]
+    | not names? or empty parseInclude(names) => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$all: parseInclude(names)}}}}}]
 
   criteria-exclude-players = (names) ->
     | not names? or empty parseExclude(names) => []
