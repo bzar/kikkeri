@@ -163,23 +163,32 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.listen 3000
 
+function parseInclude(words)
+  stuff = words |> filter (!= /^[-]/)
+  return stuff
+
+function parseExclude(words)
+  stuff = words |> filter (== /^[-]/) |> map (.substring(1))
+  return stuff
+
 function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
+
   criteria-game-tags = (tags) ->
-    | not tags? or empty tags => []
-    | otherwise => [{$match: {tags: {$all: tags}}}]
+    | not tags? or empty parseInclude(tags) => []
+    | otherwise => [{$match: {tags: {$all: parseInclude(tags)}}}]
 
   criteria-exclude-game-tags = (tags) ->
-    | not tags? or empty tags => []
-    | otherwise => [{$match: {tags: {$nin: tags}}}]
+    | not tags? or empty parseExclude(tags) => []
+    | otherwise => [{$match: {tags: {$nin: parseExclude(tags)}}}]
 
   criteria-players = (names) ->
-    | not names? or empty names => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: names}}}}}]
+    | not names? or empty parseInclude(names) => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: parseInclude(names)}}}}}]
 
   criteria-exclude-players = (names) ->
-    | not names? or empty names => []
-    | otherwise => [{$match: {teams: {$not: {$elemMatch: {players: {$in: names}}}}}}]
+    | not names? or empty parseExclude(names) => []
+    | otherwise => [{$match: {teams: {$not: {$elemMatch: {players: {$in: parseExclude(names)}}}}}}]
 
   criteria-num-players = (n) ->
     | not n > 0 => []
@@ -207,9 +216,9 @@ function req-to-game-aggregate-pipeline(req)
     | otherwise => [{$limit: n}]
 
   gameTags = query-list 'gameTags'
-  excludeGameTags = query-list 'excludeGameTags'
+  excludeGameTags = query-list 'gameTags'
   players = query-list 'players'
-  excludePlayers = query-list 'excludePlayers'
+  excludePlayers = query-list 'players'
   numPlayers = parseInt req.query.numPlayers
   date-since =  new Date(Date.parse(req.query.since) - 1)
   date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
