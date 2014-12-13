@@ -163,41 +163,46 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
 
   app.listen 3000
 
-function parseOr(words)
-  return parseInclude(words).concat(words |> filter (!= /^[-]/) |> filter (!= /^[!]/) 
-
-function parseInclude(words)
-  return words |> filter (== /^[!]/) |> map (.substring(1))  
-
-function parseExclude(words)
-  return words |> filter (== /^[-]/) |> map (.substring(1)) 
-
 function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
 
-  criteria-game-tags = (tags) ->
-    | not tags? or empty parseOr(tags) => []
-    | otherwise => [{$match: {tags: {$in: parseOr(tags)}}}]
+# parsers for include (and, or) and exclude words
+  parse-include = (words) -> 
+    | not words? or empty words => []
+    | otherwise => words |> filter (== /^[!]/) |> map (.substring(1))
 
-  criteria-must-game-tags = (tags) ->
-    | not tags? or empty parseInclude(tags) => []
-    | otherwise => [{$match: {tags: {$all: parseInclude(tags)}}}]
+  parse-or = (words) ->
+    | not words? or empty words => []
+    | otherwise => (words |> filter (!= /^[-]/) |> filter (!= /^[!]/)).concat(parse-include words)
+  
+  parse-exclude = (words) ->
+    | not words? or empty words => []
+    | otherwise => words |> filter (== /^[-]/) |> map (.substring(1)) 
+
+#
+  criteria-or-game-tags = (tags) ->
+    | not tags? or empty tags => []
+    | otherwise => [{$match: {tags: {$in: tags}}}]
+
+  criteria-include-game-tags = (tags) ->
+    | not tags? or empty tags => []
+    | otherwise => [{$match: {tags: {$all: tags}}}]
 
   criteria-exclude-game-tags = (tags) ->
-    | not tags? or empty parseExclude(tags) => []
-    | otherwise => [{$match: {tags: {$nin: parseExclude(tags)}}}]
+    | not tags? or empty tags => []
+    | otherwise => [{$match: {tags: {$nin: tags}}}]
 
-  criteria-players = (names) ->
-    | not names? or empty parseOr(names) => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: parseOr(names)}}}}}]
+  criteria-or-players = (names) ->
+    | not names? or empty names => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$in: names}}}}}]
 
-  criteria-must-players = (names) ->
-    | not names? or empty parseInclude(names) => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$all: parseInclude(names)}}}}}]
+  criteria-include-players = (names) ->
+    | not names? or empty names => []
+    | otherwise => [{$match: {teams: {$elemMatch: {players: {$all: names}}}}}]
 
   criteria-exclude-players = (names) ->
-    | not names? or empty parseExclude(names) => []
-    | otherwise => [{$match: {teams: {$not: {$elemMatch: {players: {$in: parseExclude(names)}}}}}}]
+    | not names? or empty names => []
+    | otherwise => [{$match: {teams: {$not: {$elemMatch: {players: {$in: names}}}}}}]
 
   criteria-num-players = (n) ->
     | not n > 0 => []
@@ -224,12 +229,12 @@ function req-to-game-aggregate-pipeline(req)
     | not n > 0 => []
     | otherwise => [{$limit: n}]
 
-  gameTags = query-list 'gameTags'
+  orGameTags = query-list 'gameTags'
   excludeGameTags = query-list 'gameTags'
-  mustGameTags = query-list 'gameTags'
-  players = query-list 'players'
+  includeGameTags = query-list 'gameTags'
+  orPlayers = query-list 'players'
   excludePlayers = query-list 'players'
-  mustPlayers = query-list 'players'
+  includePlayers = query-list 'players'
   numPlayers = parseInt req.query.numPlayers
   date-since =  new Date(Date.parse(req.query.since) - 1)
   date-until = new Date(Date.parse(req.query.until) + 24*60*60*1000)
@@ -237,12 +242,12 @@ function req-to-game-aggregate-pipeline(req)
   sorting = [{$sort: {timestamp: -1}}]
 
   pipeline = concat [
-    criteria-game-tags gameTags
-    criteria-exclude-game-tags excludeGameTags
-    criteria-must-game-tags mustGameTags
-    criteria-players players
-    criteria-exclude-players excludePlayers
-    criteria-must-players mustPlayers
+    criteria-or-game-tags (parse-or orGameTags)
+    criteria-exclude-game-tags (parse-exclude excludeGameTags)
+    criteria-include-game-tags (parse-include includeGameTags)
+    criteria-or-players (parse-or orPlayers)
+    criteria-exclude-players (parse-exclude excludePlayers)
+    criteria-include-players (parse-include includePlayers)
     criteria-num-players numPlayers
     criteria-date-since date-since
     criteria-date-until date-until
@@ -250,4 +255,5 @@ function req-to-game-aggregate-pipeline(req)
     criteria-limit limit
   ]
   return pipeline
+
 
