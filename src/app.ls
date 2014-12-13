@@ -173,7 +173,8 @@ function req-to-game-aggregate-pipeline(req)
 
   parse-or = (words) ->
     | not words? or empty words => []
-    | otherwise => (words |> filter (!= /^[-]/) |> filter (!= /^[!]/)).concat(parse-include words)
+    | otherwise => 
+      (words |> filter (!= /^[-]/) |> filter (!= /^[!]/)).concat(parse-include words)
   
   parse-exclude = (words) ->
     | not words? or empty words => []
