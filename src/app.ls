@@ -198,7 +198,24 @@ function req-to-game-aggregate-pipeline(req)
 
   criteria-and-players = (names) ->
     | not names? or empty names => []
-    | otherwise => [{$match: {teams: {$elemMatch: {players: {$all: names}}}}}]
+    | otherwise => [
+      {$project: {
+        _id: "$_id"
+        players: "$teams.players"
+        teams: "$teams"
+        timestamp: "$timestamp"
+        tags: "$tags"
+      }}
+      {$unwind: "$players"}
+      {$unwind: "$players"}
+      {$group: {
+        _id: "$_id"
+        all_players: {$addToSet: "$players" }
+        teams: {$first: "$teams"}
+        timestamp: {$first: "$timestamp"}
+        tags: {$first: "$tags"}
+      }}
+      {$match: {all_players: {$all: names}}}]
 
   criteria-not-players = (names) ->
     | not names? or empty names => []
