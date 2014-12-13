@@ -169,12 +169,12 @@ function req-to-game-aggregate-pipeline(req)
 # parsers for include (and, or) and exclude words
   parse-include = (words) -> 
     | not words? or empty words => []
-    | otherwise => words |> filter (== /^[!]/) |> map (.substring(1))
+    | otherwise => words |> filter (== /^[+]/) |> map (.substring(1))
 
   parse-or = (words) ->
     | not words? or empty words => []
     | otherwise => 
-      (words |> filter (!= /^[-]/) |> filter (!= /^[!]/)).concat(parse-include words)
+      (words |> filter (!= /^[-]/) |> filter (!= /^[+]/)).concat(parse-include words)
   
   parse-exclude = (words) ->
     | not words? or empty words => []
