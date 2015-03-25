@@ -5,10 +5,8 @@ chartPlayerWinRelations = (data) ->
     player-value = (p) -> (sum <| map (.total), p.totals) / p.f
 
     refresh-data = ->
-      console.log(data)
       nodes = data
         |> map (-> {name: it.name, value: player-value it})
-      console.log(nodes)
       find-node = (p) -> find (-> it.name == p), nodes
       player-links = (p, rs) ->
         src = find-node p
