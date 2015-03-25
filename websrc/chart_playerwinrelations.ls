@@ -1,8 +1,13 @@
 chartPlayerWinRelations = (data) ->
-  {empty, average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum} = require "prelude-ls"
+  {empty, average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum, minimum} = require "prelude-ls"
   render = (data) ->
     selected = null
-    player-value = (p) -> average <| map (.total), p.totals
+    totals = map (-> sum <| map (.total), it) <| map (.totals) <| data
+    console.log(totals)
+    maxScore = maximum totals
+    minScore = minimum totals
+    totalToSuccessIndex = (total) -> ((total - minScore) / (maxScore - minScore) - 0.5) * 2
+    player-value = (p) -> totalToSuccessIndex <| sum <| map (.total), p.totals
 
     refresh-data = ->
       nodes = data
@@ -146,6 +151,12 @@ chartPlayerWinRelations = (data) ->
       |> map (.score)
       |> maximum
 
+  playerTeamSize = (p, g) ->
+    g.teams
+      |> filter (-> any (== p), it.players)
+      |> map (.players.length)
+      |> maximum
+    
   winnerScore = (g) ->
     g.teams
       |> map (.score)
@@ -155,11 +166,11 @@ chartPlayerWinRelations = (data) ->
     ps = playerScore p, g
     ws = winnerScore g
     if ps < ws
-      -1
+      -1 / playerTeamSize p, g
     else if (g.teams |> map (.score) |> filter (== ws)).length > 1
       0
     else
-      1
+      1 / playerTeamSize p, g
 
   gameResult = (p, g) --> {
     opponents: opponents p, g
