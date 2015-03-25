@@ -2,16 +2,13 @@ chartPlayerWinRelations = (data) ->
   {empty, average, sum, Obj, any, filter, find, map, group-by, concat-map, maximum, minimum} = require "prelude-ls"
   render = (data) ->
     selected = null
-    totals = map (-> sum <| map (.total), it) <| map (.totals) <| data
-    console.log(totals)
-    maxScore = maximum totals
-    minScore = minimum totals
-    totalToSuccessIndex = (total) -> ((total - minScore) / (maxScore - minScore) - 0.5) * 2
-    player-value = (p) -> totalToSuccessIndex <| sum <| map (.total), p.totals
+    player-value = (p) -> (sum <| map (.total), p.totals) / p.f
 
     refresh-data = ->
+      console.log(data)
       nodes = data
         |> map (-> {name: it.name, value: player-value it})
+      console.log(nodes)
       find-node = (p) -> find (-> it.name == p), nodes
       player-links = (p, rs) ->
         src = find-node p
@@ -166,22 +163,23 @@ chartPlayerWinRelations = (data) ->
     ps = playerScore p, g
     ws = winnerScore g
     if ps < ws
-      -1 / playerTeamSize p, g
+      -1
     else if (g.teams |> map (.score) |> filter (== ws)).length > 1
       0
     else
-      1 / playerTeamSize p, g
+      1
 
   gameResult = (p, g) --> {
     opponents: opponents p, g
     result: gameScoreResult p, g
+    teamSize: playerTeamSize p, g
   }
 
   playerResults = playerGames
     |> map (-> {name: it.name, results: map (gameResult it.name), it.games})
 
-  playerOpponentResult = (r) -> [{opponent: o, result: r.result} for o in r.opponents]
-  playerOpponentResults = (rs) ->
+  playerOpponentResult = (r) -> [{opponent: o, result: r.result/r.teamSize} for o in r.opponents]
+  playerOpponentResultMap = (rs) ->
     rs
       |> concat-map playerOpponentResult
       |> group-by (.opponent)
@@ -189,13 +187,13 @@ chartPlayerWinRelations = (data) ->
       |> obj-to-list "opponent", "results"
 
   playerOpponentResults = playerResults
-    |> map (-> {name: it.name, results: playerOpponentResults it.results})
+    |> map (-> {name: it.name, f: (sum <| map (-> 1/it.teamSize) <| it.results), results: playerOpponentResultMap it.results})
 
   playerTotals = (rs) ->
     [{opponent: r.opponent, total: (sum r.results), w: (filter (> 0), r.results).length, n: r.results.length} for r in rs]
 
   playerOpponentTotals = playerOpponentResults
-    |> map (-> {name: it.name, totals: playerTotals it.results})
+    |> map (-> {name: it.name, f: it.f, totals: playerTotals it.results})
 
 
   render playerOpponentTotals

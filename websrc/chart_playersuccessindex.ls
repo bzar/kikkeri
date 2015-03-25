@@ -1,5 +1,5 @@
 chartPlayerSuccessIndex = (data) ->
-  {partition, maximum, minimum, maximum-by, sort-by, reverse, concat-map, map, group-by, sum, average} = require "prelude-ls"
+  {Obj, partition, maximum, minimum, maximum-by, sort-by, reverse, concat, concat-map, map, group-by, sum, average} = require "prelude-ls"
 
   render = (data) ->
     parent = d3.select '#chartPlayerSuccessIndex'
@@ -66,7 +66,11 @@ chartPlayerSuccessIndex = (data) ->
   isWinner = (g) -> let s = gameWinScore g
     (t) -> t.score == s
   assignScore = (score, team) --> {players: team.players, score: score}
-  teamPlayerScores = (t) -> [{name: name, score: t.score / t.players.length} for name in t.players]
+  teamPlayerScores = (t) -> [{
+    name: name, 
+    score: t.score / t.players.length, 
+    maxScore: 1 / t.players.length
+    } for name in t.players]
   gamePlayerScores = (g) ->
     [winners, losers] = g.teams
       |> sort-by (.score)
@@ -79,12 +83,9 @@ chartPlayerSuccessIndex = (data) ->
       (map (assignScore loserScore), losers)
     concat-map teamPlayerScores, scores
   totalScore = (ss) -> sum <| map (.score), ss
-  playerGroupToValues = (ps) -> 
-    totalScores = [{name: n, value: totalScore ss} for n, ss of ps]
-    maxScore = maximum <| map (.value) <| totalScores
-    minScore = minimum <| map (.value) <| totalScores
-    totalToSuccessIndex = (total) -> ((total - minScore) / (maxScore - minScore) - 0.5) * 2
-    map (-> {name: it.name, value: totalToSuccessIndex it.value}), totalScores
+  perfectScore = (ss) -> sum <| map (.maxScore), ss
+  relativeScore = (ss) -> totalScore(ss) / perfectScore(ss)
+  playerGroupToValues = (ps) -> [{name: n, value: relativeScore ss} for n, ss of ps]
 
   playerValues = data
     |> concat-map gamePlayerScores
