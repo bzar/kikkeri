@@ -1,0 +1,44 @@
+extends layout.jade
+
+block title
+  title Kikkeri - Turnaus
+
+block scripts
+
+block styles
+  link(rel='stylesheet', href=config.path+'/web/tournament.css')
+  
+  section.stretch
+    h3 Alkusarja
+    table#gameTable
+      thead
+        tr
+          th
+          each teamData, team in data.series
+            th= team
+          th Pisteet
+          th Maalit
+          th Erät
+          th Sijoitus
+      tbody
+        each teamData, team in data.series
+          tr
+            th=team
+            each od, o in data.series
+              if o === team
+                td n/a
+              else if !teamData.games[o]
+                td -
+              else
+                td
+                  each game in teamData.games[o]
+                    div #{game.teams_by_name[team].score}!{"\&nbsp;-\&nbsp;"}#{game.teams_by_name[o].score}
+            td=teamData.score
+            td=teamData.goals
+            td=teamData.count
+            td=data.seriesResults[team]
+    h3 Puolivälierät
+    
+    h3 Välierät
+    
+    h3 Loppuottelut
