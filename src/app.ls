@@ -90,8 +90,8 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
       if err
         res.status(500).send {success: false, reason: err}
       else
-        {minimumGames} = req.query
-        data = tournament.process-tournament-data games, minimumGames
+        {minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag} = req.query
+        data = tournament.process-tournament-data games, minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag
         res.render 'tournament', { config: config, query: req.query, data: data }
 
   app.get '/game/', (req, res) ->

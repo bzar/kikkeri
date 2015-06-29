@@ -4,7 +4,7 @@
 in-order = (xss) -> all (-> it.length == 1), xss
 
 # [[String] -> Data -> [[String]]] -> Data -> [String] -> [[String]]
-order-by-one = (fs, d, xs) --> 
+order-by-one = (fs, d, xs) -->
   | xs.length < 2 => [xs]
   | otherwise =>
     fold ((ys, f) -> if ys.length == 1 then f(ys[0], d) else ys), [xs], fs
