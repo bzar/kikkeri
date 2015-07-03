@@ -7,10 +7,10 @@ block scripts
 
 block styles
   link(rel='stylesheet', href=config.path+'/web/tournament.css')
-  
+
   section.stretch
     h3 Alkusarja
-    table#gameTable
+    table#gameTable(border=1)
       thead
         tr
           th
@@ -38,7 +38,44 @@ block styles
             td=teamData.count
             td=data.seriesResults[team]
     h3 Puolivälierät
-    
+      table#quarterFinalTable(border=1)
+        thead
+          tr
+            each qfp in data.quarterFinalPairs
+              th= qfp.join(" - ")
+        tbody
+          tr
+            each qfp, i in data.quarterFinalPairs
+              td
+                each g in data.quarterFinalPairGames[i]
+                  div #{g.teams_by_name[qfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[qfp[1]].score}
+
     h3 Välierät
-    
+      table#semiFinalTable(border=1)
+        thead
+          tr
+            each sfp in data.semiFinalPairs
+              th= sfp.join(" - ")
+        tbody
+          tr
+            each sfp, i in data.semiFinalPairs
+              td
+                each g in data.semiFinalPairGames[i]
+                  div #{g.teams_by_name[sfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[sfp[1]].score}
+
     h3 Loppuottelut
+      table#finalsTable(border=1)
+        thead
+          tr
+            th=data.finalPair.join(" - ")
+            th=data.consolationPair.join(" - ")
+        tbody
+          tr
+            td
+              each g in data.finalPairGames
+                div #{g.teams_by_name[data.finalPair[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.finalPair[1]].score}
+            td
+              each g in data.consolationPairGames
+                div #{g.teams_by_name[data.consolationPair[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.consolationPair[1]].score}
+              
+              
