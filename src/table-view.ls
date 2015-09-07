@@ -1,11 +1,7 @@
 {sum, group-by, concat-map, sort, unique, Obj, filter, any, all, map} = require 'prelude-ls'
+{stringify-teams} = require './gameutils'
 
 module.exports.process-game-table-data = (rawData) ->
-  stringify-team = (t) ->
-    score: t.score
-    players: sort(t.players).join(', ')
-  stringify-teams = (g) ->
-    teams: map stringify-team, g.teams
   data = rawData
     |> map stringify-teams
 

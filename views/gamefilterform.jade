@@ -1,9 +1,9 @@
 form#criteria(method='get' action='.')
   ul
     li
-      input#gameTags(placeholder='Tagit, -Tagit', type='text', name='gameTags' value=query.gameTags)
+      input#gameTags(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags)
     li
-      input#players(placeholder='Pelaajat, -Pelaajat', type='text' name='players' value=query.players)
+      input#players(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
     li
       input#numPlayers(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
     li
