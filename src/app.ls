@@ -85,14 +85,18 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         res.render 'table', { config: config, query: req.query, data: data }
 
   app.get '/tournament/', (req, res) ->
-    pipeline = req-to-game-aggregate-pipeline req
-    Game.aggregate pipeline, (err, games) ->
-      if err
-        res.status(500).send {success: false, reason: err}
-      else
-        {minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag} = req.query
-        data = tournament.process-tournament-data games, minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag
-        res.render 'tournament', { config: config, query: req.query, data: data }
+    if req.query.gameTags? and not empty req.query.gameTags
+      pipeline = req-to-game-aggregate-pipeline req
+      Game.aggregate pipeline, (err, games) ->
+        if err
+          res.status(500).send {success: false, reason: err}
+        else
+          {minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag} = req.query
+          data = tournament.process-tournament-data games, minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag
+          res.render 'tournament', { config: config, query: req.query, data: data }
+    else
+          res.render 'tournament', { config: config, query: req.query, data: null }
+
 
   app.get '/game/', (req, res) ->
     format = req.accepts ['json', 'html']

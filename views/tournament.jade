@@ -8,36 +8,64 @@ block scripts
 block styles
   link(rel='stylesheet', href=config.path+'/web/tournament.css')
 
-  section.stretch
-    h3 Alkusarja
-    table#gameTable(border=1)
-      thead
-        tr
-          th
-          each teamData, team in data.series
-            th= team
-          th Pisteet
-          th Maalit
-          th Erät
-          th Sijoitus
-      tbody
-        each teamData, team in data.series
+block content
+  section
+    form#criteria(method='get' action='.')
+      ul
+        li
+          input#gameTags(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags required="true")
+        li
+          input#quarterFinalTag(placeholder='Puolivälierätagi', type='text', name='quarterFinalTag' value=query.quarterFinalTag)
+        li
+          input#semiFinalTag(placeholder='Välierätagi', type='text', name='semiFinalTag' value=query.semiFinalTag)
+        li
+          input#finalTag(placeholder='finaalitagi', type='text', name='finalTag' value=query.finalTag)
+        li
+          input#consolationTag(placeholder='Pronssipelitagi', type='text', name='consolationTag' value=query.consolationTag)
+        li
+          input#minimumGames(placeholder='Alkusarjan minimipelimäärä', type='number' name='minimumGames' value=query.minimumGames)
+        li
+          input#players(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
+        li
+          input#numPlayers(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
+        li
+          input#since(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
+        li
+          input#until(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
+        li
+          input(value='Näytä' type='submit')
+
+  if data != null
+    section.stretch
+      h3 Alkusarja
+      table#gameTable(border=1)
+        thead
           tr
-            th=team
-            each od, o in data.series
-              if o === team
-                td n/a
-              else if !teamData.games[o]
-                td -
-              else
-                td
-                  each game in teamData.games[o]
-                    div #{game.teams_by_name[team].score}!{"\&nbsp;-\&nbsp;"}#{game.teams_by_name[o].score}
-            td=teamData.score
-            td=teamData.goals
-            td=teamData.count
-            td=data.seriesResults[team]
-    h3 Puolivälierät
+            th
+            each teamData, team in data.series
+              th= team
+            th Pisteet
+            th Maalit
+            th Erät
+            th Sijoitus
+        tbody
+          each teamData, team in data.series
+            tr
+              th=team
+              each od, o in data.series
+                if o === team
+                  td n/a
+                else if !teamData.games[o]
+                  td -
+                else
+                  td
+                    each game in teamData.games[o]
+                      div #{game.teams_by_name[team].score}!{"\&nbsp;-\&nbsp;"}#{game.teams_by_name[o].score}
+              td=teamData.score
+              td=teamData.goals
+              td=teamData.count
+              td=data.seriesResults[team]
+      h3 Puolivälierät
       table#quarterFinalTable(border=1)
         thead
           tr
@@ -50,7 +78,7 @@ block styles
                 each g in data.quarterFinalPairGames[i]
                   div #{g.teams_by_name[qfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[qfp[1]].score}
 
-    h3 Välierät
+      h3 Välierät
       table#semiFinalTable(border=1)
         thead
           tr
@@ -63,7 +91,7 @@ block styles
                 each g in data.semiFinalPairGames[i]
                   div #{g.teams_by_name[sfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[sfp[1]].score}
 
-    h3 Loppuottelut
+      h3 Loppuottelut
       table#finalsTable(border=1)
         thead
           tr
@@ -77,5 +105,9 @@ block styles
             td
               each g in data.consolationPairGames
                 div #{g.teams_by_name[data.consolationPair[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.consolationPair[1]].score}
-              
-              
+                
+                
+      h3 Tulokset
+      ol
+        each team in data.tournamentResults
+          li= team
