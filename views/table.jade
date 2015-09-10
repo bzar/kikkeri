@@ -5,19 +5,21 @@ block title
 
 block scripts
 
-block styles
-  link(rel='stylesheet', href=config.path+'/web/table.css')
+//
+  block styles
+    link(rel='stylesheet', href=config.path+'/web/table.css')
   
 block content
-  section
-    include gamefilterform.jade
+  section.pure-g
+    .pure-u-1.pure-u-md-2-5
+      include gamefilterform.jade
   h2 Pelitaulukko
   if !data || Object.keys(data).length == 0
     section
       p Ei tuloksia
   else
     section.stretch
-      table#gameTable
+      table#gameTable.pure-table.pure-table-bordered
         thead
           tr
             th

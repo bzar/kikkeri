@@ -10,35 +10,27 @@ block styles
 
 block content
   section
-    form#criteria(method='get' action='.')
-      ul
-        li
-          input#gameTags(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags required="true")
-        li
-          input#quarterFinalTag(placeholder='Puolivälierätagi', type='text', name='quarterFinalTag' value=query.quarterFinalTag)
-        li
-          input#semiFinalTag(placeholder='Välierätagi', type='text', name='semiFinalTag' value=query.semiFinalTag)
-        li
-          input#finalTag(placeholder='finaalitagi', type='text', name='finalTag' value=query.finalTag)
-        li
-          input#consolationTag(placeholder='Pronssipelitagi', type='text', name='consolationTag' value=query.consolationTag)
-        li
-          input#minimumGames(placeholder='Alkusarjan minimipelimäärä', type='number' name='minimumGames' value=query.minimumGames)
-        li
-          input#players(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
-        li
-          input#numPlayers(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
-        li
-          input#since(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
-        li
-          input#until(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
-        li
-          input(value='Näytä' type='submit')
+    form#criteria.pure-form(method='get' action='.')
+      fieldset.pure-group
+        input#gameTags.pure-input(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags required="true")
+        input#players.pure-input(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
+        input#numPlayers.pure-input(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
+      fieldset.pure-group
+        input#quarterFinalTag.pure-input(placeholder='Puolivälierätagi', type='text', name='quarterFinalTag' value=query.quarterFinalTag)
+        input#semiFinalTag.pure-input(placeholder='Välierätagi', type='text', name='semiFinalTag' value=query.semiFinalTag)
+        input#finalTag.pure-input(placeholder='Finaalitagi', type='text', name='finalTag' value=query.finalTag)
+        input#consolationTag.pure-input(placeholder='Pronssipelitagi', type='text', name='consolationTag' value=query.consolationTag)
+      fieldset.pure-group
+        input#minimumGames.pure-input(placeholder='Alkusarjan minimipelimäärä', type='number' name='minimumGames' value=query.minimumGames)
+      fieldset.pure-group
+        input#since.pure-input(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
+        input#until.pure-input(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
+      input.pure-button.pure-button-primary(value='Näytä' type='submit')
 
   if data != null
     section.stretch
       h3 Alkusarja
-      table#gameTable(border=1)
+      table#gameTable.pure-table.pure-table-bordered
         thead
           tr
             th
@@ -66,7 +58,7 @@ block content
               td=teamData.count
               td=data.seriesResults[team]
       h3 Puolivälierät
-      table#quarterFinalTable(border=1)
+      table#quarterFinalTable.pure-table.pure-table-bordered
         thead
           tr
             each qfp in data.quarterFinalPairs
@@ -79,7 +71,7 @@ block content
                   div #{g.teams_by_name[qfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[qfp[1]].score}
 
       h3 Välierät
-      table#semiFinalTable(border=1)
+      table#semiFinalTable.pure-table.pure-table-bordered
         thead
           tr
             each sfp in data.semiFinalPairs
@@ -92,7 +84,7 @@ block content
                   div #{g.teams_by_name[sfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[sfp[1]].score}
 
       h3 Loppuottelut
-      table#finalsTable(border=1)
+      table#finalsTable.pure-table.pure-table-bordered
         thead
           tr
             th=data.finalPair.join(" - ")

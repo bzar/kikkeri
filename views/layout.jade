@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 html
   head
     block title
@@ -6,21 +7,25 @@ html
     script(src=config.path+'/web/util.js', type='application/javascript')
     block scripts
     link(rel='stylesheet', href=config.path+'/web/style.css')
+    link(rel='stylesheet', href=config.path+'/web/pure-min.css')
+    link(rel='stylesheet', href=config.path+'/web/grids-responsive-min.css')
     block styles
   body
-    nav
-      ul
-        li
-          a(href=config.path+'/') Lisää tulos
-        li
-          a(href=config.path+'/game/') Pelatut pelit
-        li
-          a(href=config.path+'/charts/') Tilastoja
-        li
-          a(href=config.path+'/table/') Taulukko
-        li
-          a(href=config.path+'/tournament/') Turnaus
- 
-    #content
-      block content
-    
+    .pure-g
+      nav.pure-u-1.pure-u-md-1-6.pure-menu
+        .pure-menu-heading Kikkeri
+        ul.pure-menu-list
+          li.pure-menu-item
+            a.pure-menu-link(href=config.path+'/') Lisää tulos
+          li.pure-menu-item
+            a.pure-menu-link(href=config.path+'/game/') Pelatut pelit
+          li.pure-menu-item
+            a.pure-menu-link(href=config.path+'/charts/') Tilastoja
+          li.pure-menu-item
+            a.pure-menu-link(href=config.path+'/table/') Taulukko
+          li.pure-menu-item
+            a.pure-menu-link(href=config.path+'/tournament/') Turnaus
+
+      #content.pure-u-1.pure-u-md-5-6
+        block content
+

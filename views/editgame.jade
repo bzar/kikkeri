@@ -8,21 +8,22 @@ block scripts
 
 block content
   h1= moment(game.timestamp).format("YYYY-MM-DD HH:mm")
-  section
-    form
-      ul
-        li
-          input#team1(type='text', placeholder='Joukkue 1' required value=game.teams[0].players.join(', '))
-          input#score1(type='number' placeholder='Pisteet 1' min='0' max='10' required value=game.teams[0].score)
-        li
-          input#team2(type='text', placeholder='Joukkue 2' required value=game.teams[1].players.join(', '))
-          input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required value=game.teams[1].score)
-        li
-          input#tags(type='text', placeholder='Tagit' value=game.tags.join(', '))
-          select#previousTags
-            option
-            each tag in tags
-              option= tag.join(', ')
-        li
-          input(type='submit', value='Päivitä')
-
+  section.pure-g
+    form.pure-u-1.pure-u-md-1-2.pure-u-lg-2-5.pure-form.pure-g
+      .pure-u-3-4.padded
+        input#team1.pure-input-1(type='text', placeholder='Joukkue 1' required value=game.teams[0].players.join(', '))
+      .pure-u-1-4.padded
+        input#score1.pure-input-1(type='number' placeholder='Pisteet 1' min='0' max='10' required value=game.teams[0].score)
+      .pure-u-3-4.padded
+        input#team2.pure-input-1(type='text', placeholder='Joukkue 2' required value=game.teams[1].players.join(', '))
+      .pure-u-1-4.padded
+        input#score2.pure-input-1(type='number' placeholder='Pisteet 2' min='0' max='10' required value=game.teams[1].score)
+      .pure-u-3-4.padded
+        input#tags.pure-input-1(type='text', placeholder='Tagit' value=game.tags.join(', '))
+      .pure-u-1-4.padded
+        select#previousTags.pure-input-1
+          option
+          each tag in tags
+            option= tag.join(', ')
+      .pure-u-1-4.padded
+        input.pure-button.pure-button-primary(type='submit', value='Päivitä')

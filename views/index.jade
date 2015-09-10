@@ -8,23 +8,25 @@ block scripts
 
 block content
   h1 Lisää kikkeritulos
-  section
-    form
-      ul
-        li
-          input#team1(type='text', placeholder='Joukkue 1' required)
-          input#score1(type='number' placeholder='Pisteet 1' min='0' max='10' required)
-        li
-          input#team2(type='text', placeholder='Joukkue 2' required)
-          input#score2(type='number' placeholder='Pisteet 2' min='0' max='10' required)
-        li
-          input#tags(type='text', placeholder='Tagit')
-          select#previousTags
-            option
-            each tag in tags
-              option= tag.join(', ')
-        li
-          input(type='submit', value='Lähetä')
+  section.pure-g
+    form.pure-u-1.pure-u-md-1-2.pure-u-lg-2-5.pure-form.pure-g
+      .pure-u-3-4.padded
+        input#team1.pure-input-1(type='text', placeholder='Joukkue 1' required)
+      .pure-u-1-4.padded
+        input#score1.pure-input-1(type='number' placeholder='Pisteet 1' min='0' max='10' required)
+      .pure-u-3-4.padded
+        input#team2.pure-input-1(type='text', placeholder='Joukkue 2' required)
+      .pure-u-1-4.padded
+        input#score2.pure-input-1(type='number' placeholder='Pisteet 2' min='0' max='10' required)
+      .pure-u-3-4.padded
+        input#tags.pure-input-1(type='text', placeholder='Tagit')
+      .pure-u-1-4.padded
+        select#previousTags.pure-input-1
+          option
+          each tag in tags
+            option= tag.join(', ')
+      .pure-u-1-4.padded
+        input.pure-button.pure-button-primary(type='submit', value='Lähetä')
   h2 Viimeisimmät pelit
   section
     ul#games

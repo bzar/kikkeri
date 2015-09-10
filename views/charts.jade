@@ -16,8 +16,9 @@ block styles
   link(rel='stylesheet', href=config.path+'/web/charts.css')
   
 block content
-  section
-    include gamefilterform.jade
+  section.pure-g
+    .pure-u-1.pure-u-md-2-5
+      include gamefilterform.jade
   h2 Pelattuja pelejä
   section
     #chartPlayerGames
