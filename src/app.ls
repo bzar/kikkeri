@@ -1,6 +1,7 @@
 require! 'express'
 require! 'mongoose'
 require! 'body-parser'
+require! 'request'
 require! 'moment'
 require! './config'
 require! './table-view'
@@ -124,6 +125,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
     game.save (err) ->
       if not err
         res.send {"success": true}
+        post-to-slack(game)
       else
         res.status(500).send {success: false, reason: err}
 
@@ -288,4 +290,12 @@ function req-to-game-aggregate-pipeline(req)
   ]
   return pipeline
 
+
+post-to-slack = (game) ->
+  if not empty config.slackIncomingWebHookUrl
+    teams = game.teams |> map (-> it.players.join(",")) |> (-> it.join(" vs. "))
+    scores = game.teams |> map (.score) |> (-> it.join(" - " ))
+    tags = game.tags |> map (-> "##it") |> (-> it.join(" "))
+    message = JSON.stringify({"text": "#teams => #scores #tags"})
+    request.post config.slackIncomingWebHookUrl, {form: {payload: message}}
 
