@@ -83,7 +83,11 @@ sort-by-global-opponent-goals = (xs, d) ->
   xs |> sort-by (-> td[it]) |> segment-by (-> td[it])
 
 module.exports.process-tournament-data = (games, min-games, quarterFinalTag, semiFinalTag, finalTag, consolationTag) ->
-  games = games |> map stringify-teams |> map with-teams-by-name |> enforce-min-games min-games
+  games = games
+    |> map stringify-teams
+    |> map with-teams-by-name
+    |> enforce-min-games min-games
+    |> sort-by (.timestamp)
 
   series-games = [g for g in games when not any (-> has-tag it, g), [quarterFinalTag, semiFinalTag, finalTag, consolationTag]]
   quarterFinal-games = filter (has-tag quarterFinalTag), games
