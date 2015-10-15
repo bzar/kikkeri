@@ -1,4 +1,6 @@
 module.exports =
   path: ''
-  slackIncomingWebHookUrl: ''
-
+  slackIncomingWebHookUrls:
+    * tags: []
+      url: ''
+    ...
