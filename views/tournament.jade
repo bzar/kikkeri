@@ -4,9 +4,10 @@ block title
   title Kikkeri - Turnaus
 
 block scripts
+  script(src=config.path+'/web/tablesort.min.js', type='application/javascript')
+  script(src=config.path+'/web/tablesort.number.js', type='application/javascript')
 
 block styles
-  link(rel='stylesheet', href=config.path+'/web/tournament.css')
 
 block content
   section
@@ -35,11 +36,11 @@ block content
           tr
             th
             each teamData, team in data.series
-              th= team
-            th Pisteet
-            th Maalit
-            th Erät
-            th Sijoitus
+              th.no-sort= team
+            th(data-sort-method=number) Pisteet
+            th(data-sort-method=number) Maalit
+            th(data-sort-method=number) Erät
+            th.sort-default(data-sort-method=number) Sijoitus
         tbody
           each teamData, team in data.series
             tr
@@ -57,6 +58,7 @@ block content
               td=teamData.goals
               td=teamData.count
               td=data.seriesResults[team]
+        script new Tablesort(document.getElementById('gameTable'));
       h3 Puolivälierät
       table#quarterFinalTable.pure-table.pure-table-bordered
         thead
