@@ -292,11 +292,19 @@ function req-to-game-aggregate-pipeline(req)
 
 
 post-to-slack = (game) ->
-  for item in config.slackIncomingWebHookUrls
-    if not empty item.url and any (-> it in item.tags), game.tags
-      teams = game.teams |> map (-> it.players.join(", ")) |> (-> it.join(" vs. "))
-      scores = game.teams |> map (.score) |> (-> it.join(" - " ))
-      tags = game.tags |> map (-> "##it") |> (-> it.join(" "))
+  game-has-tag-in = (tags) -> any (-> it in tags), game.tags
+
+  teams = game.teams |> map (-> it.players.join(", ")) |> (-> it.join(" vs. "))
+  scores = game.teams |> map (.score) |> (-> it.join(" - " ))
+  tags = game.tags |> map (-> "##it") |> (-> it.join(" "))
+
+  for item in config.slack.channelTags
+    if not empty item.channel and game-has-tag-in item.tags
       message = JSON.stringify({"text": "#teams => #scores #tags"})
-      request.post item.url, {form: {payload: message}}
+      form = {payload: message, channel: item.channel}
+      if config.slack.incomingWebHookUrl
+        request.post config.slack.incomingWebHookUrl, {form: form}
+      else
+        console.log form
+
 
