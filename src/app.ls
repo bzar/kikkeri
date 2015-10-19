@@ -300,8 +300,8 @@ post-to-slack = (game) ->
 
   for item in config.slack.channelTags
     if not empty item.channel and game-has-tag-in item.tags
-      message = JSON.stringify({"text": "#teams => #scores #tags"})
-      form = {payload: message, channel: item.channel}
+      message = JSON.stringify({text: "#teams => #scores #tags", channel: item.channel})
+      form = {payload: message}
       if config.slack.incomingWebHookUrl
         request.post config.slack.incomingWebHookUrl, {form: form}
       else
