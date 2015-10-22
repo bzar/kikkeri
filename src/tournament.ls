@@ -105,7 +105,7 @@ elimination = (games, matchups) ->
 
 do-prefinal = (k, tag, teams, games) ->
   nth-place = (n) ->
-    | n < teams.length => teams[n]
+    | n < teams.length => teams[n] or "?"
     | otherwise => null
   matchups = [[nth-place(i), nth-place(2*k - 1 - i)] for i til k]
   tagged-games = filter (has-tag tag), games
@@ -113,7 +113,7 @@ do-prefinal = (k, tag, teams, games) ->
 
 do-final = (tag, teams, games) ->
   tagged-games = filter (has-tag tag), games
-  single-elimination tagged-games, teams
+  single-elimination tagged-games, (map (-> it or "?"), teams)
 
 
 module.exports.process-tournament-data = (games, min-games, quarterFinalTag, semiFinalTag, finalTag, consolationTag) ->
