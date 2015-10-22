@@ -63,45 +63,52 @@ block content
       table#quarterFinalTable.pure-table.pure-table-bordered
         thead
           tr
-            each qfp in data.quarterFinalPairs
-              th= qfp.join(" - ")
+            each qfp, i in data.quarterFinal.matchups
+              if 7 - i < data.numTeams
+                th= qfp.join(" - ")
+              else
+                th= qfp[0]
         tbody
           tr
-            each qfp, i in data.quarterFinalPairs
+            each qfp, i in data.quarterFinal.matchups
               td
-                each g in data.quarterFinalPairGames[i]
+                each g in data.quarterFinal.games[i]
                   div #{g.teams_by_name[qfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[qfp[1]].score}
 
       h3 Välierät
       table#semiFinalTable.pure-table.pure-table-bordered
         thead
           tr
-            each sfp in data.semiFinalPairs
-              th= sfp.join(" - ")
+            each sfp, i in data.semiFinal.matchups
+              if 3 - i < data.numTeams
+                th= sfp.join(" - ")
+              else
+                th= sfp[0]
         tbody
           tr
-            each sfp, i in data.semiFinalPairs
+            each sfp, i in data.semiFinal.matchups
               td
-                each g in data.semiFinalPairGames[i]
+                each g in data.semiFinal.games[i]
                   div #{g.teams_by_name[sfp[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[sfp[1]].score}
 
       h3 Loppuottelut
       table#finalsTable.pure-table.pure-table-bordered
         thead
           tr
-            th=data.finalPair.join(" - ")
-            th=data.consolationPair.join(" - ")
+            th=data.final.matchup.join(" - ")
+            th=data.consolation.matchup.join(" - ")
         tbody
           tr
             td
-              each g in data.finalPairGames
-                div #{g.teams_by_name[data.finalPair[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.finalPair[1]].score}
+              each g in data.final.games
+                div #{g.teams_by_name[data.final.matchup[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.final.matchup[1]].score}
             td
-              each g in data.consolationPairGames
-                div #{g.teams_by_name[data.consolationPair[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.consolationPair[1]].score}
+              each g in data.consolation.games
+                div #{g.teams_by_name[data.consolation.matchup[0]].score}!{"\&nbsp;-\&nbsp;"}#{g.teams_by_name[data.consolation.matchup[1]].score}
                 
                 
-      h3 Tulokset
-      ol
-        each team in data.tournamentResults
-          li= team
+      if data.final.winner && data.consolation.winner
+        h3 Tulokset
+        ol
+          each team in data.tournamentResults
+            li= team

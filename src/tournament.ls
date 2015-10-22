@@ -1,4 +1,4 @@
-{drop, reverse, sortBy, sum, group-by, concat, concat-map, sort, unique, Obj, filter, any, all, map, find, maximum-by, minimum-by, count-by, id, difference} = require 'prelude-ls'
+{first, drop, reverse, sortBy, sum, group-by, concat, concat-map, sort, unique, Obj, filter, any, all, map, find, maximum-by, minimum-by, count-by, id, difference, zip-with} = require 'prelude-ls'
 {
   stringify-teams,
   games-by-team,
@@ -82,6 +82,40 @@ sort-by-global-opponent-goals = (xs, d) ->
   td = {[t, (get-goals t)] for t in xs}
   xs |> sort-by (-> td[it]) |> segment-by (-> td[it])
 
+pick-winner = (games, teams) -->
+  | not any id, teams => null
+  | not all id, teams => first <| filter id, teams
+  | otherwise => winner-of-games <| filter (is-game-between teams), games
+
+pick-loser = (games, teams) -->
+  | not all id, teams => null
+  | otherwise => loser-of-games <| filter (is-game-between teams), games
+
+single-elimination = (games, matchup) ->
+  matchup: matchup
+  winner: pick-winner games, matchup
+  loser: pick-loser games, matchup
+  games: filter (is-game-between matchup), games
+
+elimination = (games, matchups) ->
+  matchups: matchups
+  winners: map (pick-winner games), matchups
+  losers: map (pick-loser games), matchups
+  games: [filter (is-game-between teams), games for teams in matchups]
+
+do-prefinal = (k, tag, teams, games) ->
+  nth-place = (n) ->
+    | n < teams.length => teams[n]
+    | otherwise => null
+  matchups = [[nth-place(i), nth-place(2*k - 1 - i)] for i til k]
+  tagged-games = filter (has-tag tag), games
+  elimination tagged-games, matchups
+
+do-final = (tag, teams, games) ->
+  tagged-games = filter (has-tag tag), games
+  single-elimination tagged-games, teams
+
+
 module.exports.process-tournament-data = (games, min-games, quarterFinalTag, semiFinalTag, finalTag, consolationTag) ->
   games = games
     |> map stringify-teams
@@ -90,10 +124,6 @@ module.exports.process-tournament-data = (games, min-games, quarterFinalTag, sem
     |> sort-by (.timestamp)
 
   series-games = [g for g in games when not any (-> has-tag it, g), [quarterFinalTag, semiFinalTag, finalTag, consolationTag]]
-  quarterFinal-games = filter (has-tag quarterFinalTag), games
-  semiFinal-games = filter (has-tag semiFinalTag), games
-  final-games = filter (has-tag finalTag), games
-  consolation-games = filter (has-tag consolationTag), games
 
   series = series-games
     |> games-by-team
@@ -103,37 +133,29 @@ module.exports.process-tournament-data = (games, min-games, quarterFinalTag, sem
 
   final-order = multisort [sort-by-score, sort-by-goals, sort-by-opponent-goals, sort-by-global-goals, sort-by-global-opponent-goals], [team for team of series], series-games
   series-results = {[team, final-order.indexOf(team) + 1] for team of series}
-  nth-place = (n) -> final-order[n] or null
 
-  quarterFinal-pairs = [[nth-place(i), nth-place(7-i)] for i til 4]
-  quarterFinal-pair-games = [filter (is-game-between teams), quarterFinal-games for teams in quarterFinal-pairs]
-  quarterFinal-winners = [winner-of-games gs for gs in quarterFinal-pair-games]
-  semiFinal-pairs = [[quarterFinal-winners[i], quarterFinal-winners[3-i]] for i til 2]
-  semiFinal-pair-games = [filter (is-game-between teams), semiFinal-games for teams in semiFinal-pairs]
-  final-pair = [winner-of-games g for g in semiFinal-pair-games]
-  final-pair-games = filter (is-game-between final-pair), final-games
-  consolation-pair = [loser-of-games g for g in semiFinal-pair-games]
-  consolation-pair-games = filter (is-game-between consolation-pair), consolation-games
+
+  quarterFinal = do-prefinal 4, quarterFinalTag, final-order, games
+  semiFinal = do-prefinal 2, semiFinalTag, quarterFinal.winners, games
+  final = do-final finalTag, semiFinal.winners, games
+  consolation = do-final consolationTag, semiFinal.losers, games
 
   tournament-results =
-    [winner-of-games final-pair-games] ++
-    [loser-of-games final-pair-games] ++
-    [winner-of-games consolation-pair-games] ++
-    [loser-of-games consolation-pair-games] ++
-    (difference final-order, quarterFinal-winners)
+    [final.winner] ++
+    [final.loser] ++
+    [consolation.winner] ++
+    [consolation.loser] ++
+    (difference final-order, quarterFinal.winners)
 
 
   data = {
+    numTeams: final-order.length
     series
     series-results
-    quarterFinal-pairs
-    quarterFinal-pair-games
-    semiFinal-pairs
-    semiFinal-pair-games
-    final-pair
-    final-pair-games
-    consolation-pair
-    consolation-pair-games
+    quarterFinal
+    semiFinal
+    final
+    consolation
     tournament-results
   }
   console.log data
