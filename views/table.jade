@@ -10,6 +10,7 @@ block content
     .pure-u-1.pure-u-md-2-5
       include gamefilterform.jade
   h2 Pelitaulukko
+  p voitot - tappiot (tehdyt maalit - päästetyt maalit)
   if !data || Object.keys(data).length == 0
     section
       p Ei tuloksia
@@ -28,10 +29,10 @@ block content
               th=team
               each pd, t in data
                 if playerData.opponents[t]
-                  td #{playerData.opponents[t].wins}!{"\&nbsp;-\&nbsp;"}#{playerData.opponents[t].losses}
+                  td #{playerData.opponents[t].wins}!{"\&nbsp;-\&nbsp;"}#{playerData.opponents[t].losses} (#{playerData.opponents[t].goals}!{"\&nbsp;-\&nbsp;"}#{playerData.opponents[t].goalsagainst})
                 else
                   td -
-              th #{playerData.wins}!{"\&nbsp;-\&nbsp;"}#{playerData.losses}
+              th #{playerData.wins}!{"\&nbsp;-\&nbsp;"}#{playerData.losses} (#{playerData.goals}!{"\&nbsp;-\&nbsp;"}#{playerData.goalsagainst})
               
       
 
