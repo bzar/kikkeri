@@ -33,12 +33,16 @@ module.exports.process-game-table-data = (rawData) ->
     |> Obj.map (group-by (.opponent.players))
 
   aggregate-results = (games) ->
+    goals: sum <| map (-> it.own.score), games
+    goalsagainst: sum <| map (-> it.opponent.score), games
     wins: filter (-> it.own.score > it.opponent.score), games |> (.length)
     losses: filter (-> it.own.score < it.opponent.score), games |> (.length)
     ties: filter (-> it.own.score == it.opponent.score), games |> (.length)
     games: games
 
   player-totals = (opponents) ->
+    goals: map (.goals), Obj.values opponents |> sum
+    goalsagainst: map (.goalsagainst), Obj.values opponents |> sum
     wins: map (.wins), Obj.values opponents |> sum
     losses: map (.losses), Obj.values opponents |> sum
     ties: map (.ties), Obj.values opponents |> sum
@@ -48,6 +52,4 @@ module.exports.process-game-table-data = (rawData) ->
     |> Obj.map (Obj.map aggregate-results)
     |> Obj.map player-totals
   return results
-
-
 
