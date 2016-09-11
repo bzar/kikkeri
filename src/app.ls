@@ -3,6 +3,7 @@ require! 'mongoose'
 require! 'body-parser'
 require! 'request'
 require! 'moment'
+require! 'process'
 require! './config'
 require! './table-view'
 require! './tournament'
@@ -54,7 +55,8 @@ playerNames = (cb) ->
       names = map (._id), results
       cb err, names
 
-mongoose.connect 'mongodb://localhost/kikkeri', ->
+mongodb_uri = process.env.MONGODB_URI || 'mongodb://localhost/kikkeri'
+mongoose.connect mongodb_uri, ->
   app = do express
   app.use('/web', express.static (__dirname + '/web'))
   app.use(bodyParser.json {})
@@ -178,7 +180,7 @@ mongoose.connect 'mongodb://localhost/kikkeri', ->
         game.save()
         res.send {success: true}
 
-  app.listen 3000
+  app.listen (process.env.PORT || 3000)
 
 function req-to-game-aggregate-pipeline(req)
   query-list = (p) -> if req.query[p] then req.query[p].split(/[, ]+/)
