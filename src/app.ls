@@ -7,6 +7,7 @@ require! 'process'
 require! './config'
 require! './table-view'
 require! './tournament'
+require! './ranking'
 
 {empty, concat, filter, any, all, map} = require 'prelude-ls'
 
@@ -77,6 +78,16 @@ mongoose.connect mongodb_uri, ->
 
   app.get '/charts/', (req, res) ->
     res.render 'charts', { config: config, query: req.query }
+
+  app.get '/ranking/', (req, res) ->
+    pipeline = req-to-game-aggregate-pipeline req
+    Game.aggregate pipeline, (err, games) ->
+      if err
+        res.status(500).send {success: false, reason: err}
+      else
+        data =
+          cir: ranking.cir(games)
+        res.render 'ranking', { config: config, query: req.query, data: data }
 
   app.get '/table/', (req, res) ->
     pipeline = req-to-game-aggregate-pipeline req

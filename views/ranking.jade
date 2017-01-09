@@ -1,0 +1,23 @@
+extends layout.jade
+
+block title
+  title Kikkeriranking
+
+block scripts
+  script(src=config.path+'/web/prelude-browser-min.js', type='application/javascript')
+  script(src=config.path+'/web/game_filters.js', type='application/javascript')
+  script(src=config.path+'/web/ranking.js', type='application/javascript')
+
+// block styles
+//  link(rel='stylesheet', href=config.path+'/web/ranking.css')
+  
+block content
+  section.pure-g
+    .pure-u-1.pure-u-md-2-5
+      include gamefilterform.jade
+  h2 CIR
+  section
+    ol
+      each player in data.cir
+        li #{player.name} (#{player.score})
+
