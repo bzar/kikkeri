@@ -35,3 +35,4 @@ module.exports.cir = (gs) ->
     |> Obj.obj-to-pairs
     |> map ([t, s]) -> {name: t, score: s}
     |> sort-with (a, b) -> b.score - a.score
+    |> map (x) -> x with score: parseInt(x.score)
