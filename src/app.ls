@@ -87,6 +87,7 @@ mongoose.connect mongodb_uri, ->
       else
         data =
           cir: ranking.cir(games)
+          simplelo: ranking.simplelo(games)
         res.render 'ranking', { config: config, query: req.query, data: data }
 
   app.get '/table/', (req, res) ->
