@@ -29,7 +29,7 @@ module.exports.cir = (gs) ->
     rs[loser.players] = loser_rating - transfer
     rs
 
-  scores = fold score-game, {}, (map stringify-teams, gs)
+  scores = fold score-game, {}, (gs |> sort-by (.timestamp) |> map stringify-teams)
 
   scores
     |> Obj.obj-to-pairs
