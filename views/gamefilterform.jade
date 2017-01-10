@@ -2,18 +2,18 @@ form#criteria.pure-form.pure-form-aligned(method='get' action='.')
   fieldset
     div.pure-control-group
       label(for=gameTags) Tagit
-      input#gameTags.pure-input-2-3(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags)
+      input#gameTags.pure-input-2-3(placeholder='tagi, -tagi, +tagi', type='text', name='gameTags' value=query.gameTags)
     div.pure-control-group
       label(for=players) Pelaajat
-      input#players.pure-input-2-3(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
+      input#players.pure-input-2-3(placeholder='pelaaja, -pelaaja, +pelaaja', type='text' name='players' value=query.players)
     div.pure-control-group
       label(for=numPlayers) Pelaajien lukumäärä
-      input#numPlayers.pure-input-2-3(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
+      input#numPlayers.pure-input-2-3(placeholder='mikä tahansa', type='number' name='numPlayers' value=query.numPlayers)
     div.pure-control-group
       label(for=since) Alkupäivämäärä
-      input#since.pure-input-2-3(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
+      input#since.pure-input-2-3(placeholder='yyyy-mm-dd' type='date' name='since' value=query.since)
     div.pure-control-group
       label(for=until) Loppupäivämäärä
-      input#until.pure-input-2-3(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
+      input#until.pure-input-2-3(placeholder='yyyy-mm-dd' type='date' name='until' value=query.until)
   input.pure-button.pure-button-primary(value='Suodata' type='submit')
 

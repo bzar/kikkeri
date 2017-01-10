@@ -106,6 +106,11 @@ mongoose.connect mongodb_uri, ->
           res.status(500).send {success: false, reason: err}
         else
           {minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag} = req.query
+          quarterFinalTag ||= 'puolivälierä'
+          semiFinalTag ||= 'välierä'
+          finalTag ||= 'finaali'
+          consolationTag ||= 'pronssi'
+
           data = tournament.process-tournament-data games, minimumGames, quarterFinalTag, semiFinalTag, finalTag, consolationTag
           res.render 'tournament', { config: config, query: req.query, data: data }
     else

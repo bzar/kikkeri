@@ -15,37 +15,37 @@ block content
       fieldset
         div.pure-control-group
           label(for=gameTags) Tagit
-          input#gameTags.pure-input-2-3(placeholder='Tagit, -Tagit, +Tagit', type='text', name='gameTags' value=query.gameTags required="true")
+          input#gameTags.pure-input-2-3(placeholder='tagi, -tagi, +tagi', type='text', name='gameTags' value=query.gameTags required="true")
         div.pure-control-group
           label(for=players) Pelaajat
-          input#players.pure-input-2-3(placeholder='Pelaajat, -Pelaajat, +Pelaajat', type='text' name='players' value=query.players)
+          input#players.pure-input-2-3(placeholder='pelaaja, -pelaaja, +pelaaja', type='text' name='players' value=query.players)
         div.pure-control-group
           label(for=numPlayers) Pelaajien lukumäärä
-          input#numPlayers.pure-input-2-3(placeholder='Pelaajien lukumäärä', type='number' name='numPlayers' value=query.numPlayers)
+          input#numPlayers.pure-input-2-3(placeholder='mikä tahansa', type='number' name='numPlayers' value=query.numPlayers)
       fieldset
         div.pure-control-group
           label(for=quarterFinalTag) Puolivälierätagi
-          input#quarterFinalTag.pure-input-2-3(placeholder='Puolivälierätagi', type='text', name='quarterFinalTag' value=query.quarterFinalTag)
+          input#quarterFinalTag.pure-input-2-3(placeholder='puolivälierä', type='text', name='quarterFinalTag' value=query.quarterFinalTag)
         div.pure-control-group
           label(for=semiFinalTag) välierätagi
-          input#semiFinalTag.pure-input-2-3(placeholder='Välierätagi', type='text', name='semiFinalTag' value=query.semiFinalTag)
+          input#semiFinalTag.pure-input-2-3(placeholder='välierä', type='text', name='semiFinalTag' value=query.semiFinalTag)
         div.pure-control-group
           label(for=finalTag) Finaalitagi
-          input#finalTag.pure-input-2-3(placeholder='Finaalitagi', type='text', name='finalTag' value=query.finalTag)
+          input#finalTag.pure-input-2-3(placeholder='finaali', type='text', name='finalTag' value=query.finalTag)
         div.pure-control-group
           label(for=consolationTag) Pronssipelitagi
-          input#consolationTag.pure-input-2-3(placeholder='Pronssipelitagi', type='text', name='consolationTag' value=query.consolationTag)
+          input#consolationTag.pure-input-2-3(placeholder='pronssi', type='text', name='consolationTag' value=query.consolationTag)
       fieldset
       div.pure-control-group
         label(for=minimumGames) Alkusarjan minimipelimäärä
-        input#minimumGames.pure-input-2-3(placeholder='Alkusarjan minimipelimäärä', type='number' name='minimumGames' value=query.minimumGames)
+        input#minimumGames.pure-input-2-3(placeholder='mikä tahansa', type='number' name='minimumGames' value=query.minimumGames)
       fieldset
         div.pure-control-group
           label(for=since) Alkupäivämäärä
-          input#since.pure-input-2-3(placeholder='Alkupäivämäärä' type='date' name='since' value=query.since)
+          input#since.pure-input-2-3(placeholder='yyyy-mm-dd' type='date' name='since' value=query.since)
         div.pure-control-group
           label(for=until) Loppupäivämäärä
-          input#until.pure-input-2-3(placeholder='Loppupäivämäärä' type='date' name='until' value=query.until)
+          input#until.pure-input-2-3(placeholder='yyyy-mm-dd' type='date' name='until' value=query.until)
       input.pure-button.pure-button-primary(value='Näytä' type='submit')
 
   if data != null
