@@ -1,5 +1,5 @@
 chartPlayerScores = (data) ->
-  {sort, sort-by, reverse, concat-map, count-by, id} = require "prelude-ls"
+  {sort, sort-by, reverse, concat-map, count-by, id, unique-by, map, flatten, group-by, values} = require "prelude-ls"
 
   render = (data) ->
     parent = d3.select '#chartPlayerScores'
@@ -57,15 +57,25 @@ chartPlayerScores = (data) ->
       .attr "y", (d) -> y(d.name)  + 4
       .text (.scores)
 
-  playerScores = data
+  separatePlayers = (obj) ->
+    scores = (obj.score / obj.players.length)
+    for x in obj.players
+      { "name": x, "scores": scores}
+
+  sumScores = (array) ->
+    playerData = {name: "", scores: 0}
+    for obj in array
+      playerData.name = obj.name
+      playerData.scores += obj.scores
+    playerData
+
+  freqData = data
     |> concat-map (.teams)
-    |> concat-map (.players)
-    |> sort
-    |> count-by id
-
-  console.log data
-
-  freqData = [{name: name, scores: scores} for name, scores of playerScores]
+    |> map separatePlayers
+    |> flatten
+    |> group-by (.name)
+    |> values
+    |> map sumScores
     |> sort-by (.scores)
     |> reverse
   render freqData
