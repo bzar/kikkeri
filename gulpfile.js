@@ -1,53 +1,32 @@
 var gulp = require('gulp');
 var gulpLiveScript = require('gulp-livescript');
-var nodemon = require('gulp-nodemon');
-var sass = require('gulp-sass');
+var sassCompiler = require('sass')
+var gulpSass = require('gulp-sass')(sassCompiler);
 
-gulp.task('default', ['build']);
-
-gulp.task('build', ['ls-server', 'ls-client', 'views', 'web', 'sass']);
-
-gulp.task('ls-server', function() {
+function lsServer(){
   return gulp.src('./src/*.ls')
     .pipe(gulpLiveScript({bare: true}))
     .pipe(gulp.dest('build'));
-});
+};
 
-gulp.task('ls-client', function() {
+function lsClient(){
   return gulp.src('./websrc/*.ls')
     .pipe(gulpLiveScript({bare: true}))
     .pipe(gulp.dest('build/web'));
-});
-gulp.task('web', function() {
+};
+function web(){
   return gulp.src('./web/*')
     .pipe(gulp.dest('build/web'));
-});
-gulp.task('sass', function() {
+};
+function buildSass(){
   return gulp.src('./sass/*')
-    .pipe(sass())
+    .pipe(gulpSass.sync())
     .pipe(gulp.dest('build/web'));
-});
-gulp.task('views', function() {
+};
+function views(){
   return gulp.src('./views/*.jade')
     .pipe(gulp.dest('build/views'));
-});
+};
 
-
-gulp.task('watch', function() {
-  gulp.watch('src/*.ls', ['ls-server']);
-  gulp.watch('websrc/*.ls', ['ls-client']);
-  gulp.watch('web/*', ['web']);
-  gulp.watch('sass/*', ['sass']);
-  gulp.watch('views/*.jade', ['views']);
-});
-
-gulp.task('nodemon', function() {
-  nodemon({
-    script: 'build/app.js',
-    ext: 'js',
-    env: {'NODE_ENV': 'development'},
-    watch: ['build/*', 'build/views/*']
-  });
-});
-gulp.task('dev', ['build', 'watch', 'nodemon']);
-
+exports.build = gulp.parallel([lsServer, lsClient, views, web, buildSass]);
+exports.default = exports.build;

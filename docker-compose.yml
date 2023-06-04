@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:4
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - kikkeri_data:/data/db
+  kikkeri:
+    build: .
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://mongo/kikkeri 
+volumes:
+  kikkeri_data:

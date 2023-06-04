@@ -4,21 +4,21 @@
   "private": true,
   "dependencies": {
     "express": "4.9.7",
-    "mongoose": ">= 3.8.17",
+    "mongoose": "^5.0.0",
     "jade": ">= 1.7.0",
     "body-parser": ">= 1.9.0",
     "moment": ">= 2.8.3",
     "prelude-ls": ">= 1.1.1",
-    "gulp-sass": ">= 1.2.0",
-    "livescript": "^1.5.0",
-    "gulp": "^3.8.8",
-    "gulp-livescript": "^2.0.0",
-    "gulp-nodemon": "^1.0.4"
+    "request": "2.88.2"
   },
   "devDependencies": {
+    "sass": "^1.62.1",
+    "gulp-sass": ">= 1.2.0",
+    "livescript": "^1.5.0",
+    "gulp": "^4.0.0",
+    "gulp-livescript": "^2.0.0"
   },
   "scripts": {
-    "start": "node build/app.js",
-    "postinstall": "gulp build"
+    "start": "node build/app.js"
   }
 }
