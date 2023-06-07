@@ -13,7 +13,10 @@ services:
       - mongo
     ports:
       - "3000:3000"
+    volumes:
+      - ./config:/etc/kikkeri
     environment:
       MONGODB_URI: mongodb://mongo/kikkeri 
+      CONFIG_FILE: /etc/kikkeri/config.json
 volumes:
   kikkeri_data:
